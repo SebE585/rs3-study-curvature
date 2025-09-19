@@ -1,52 +1,55 @@
-# docs/product.md
+# 🚗 Produit — RoadSimulator3
 
 ## Elevator Speech
-
-Ce projet vise à fournir une analyse approfondie de la courbure dans le modèle RS3, en utilisant des méthodes avancées pour mieux comprendre ses propriétés géométriques et leurs implications.
+RoadSimulator3 est une solution avancée de simulation de trajets véhicules intégrant GPS, IMU et gyroscope pour générer des données réalistes à haute fréquence (10 Hz).  
+Unique sur le marché, elle fusionne navigation, inertie et profils de conduite pour créer des trajets synthétiques hyper-réalistes.  
 
 ## Business Model Canvas
-
-### Segments de clients
-- Chercheurs en mathématiques et géométrie différentielle
-- Étudiants en sciences mathématiques
-- Institutions académiques et de recherche
+### Segments clients
+- Constructeurs automobiles
+- Assureurs
+- Acteurs smart city
+- R&D en mobilité
 
 ### Propositions de valeur
-- Analyse précise et innovante de la courbure dans le modèle RS3
-- Outils et visualisations pour faciliter la compréhension
-- Documentation complète et accessible
+- Simulateur inertiel réaliste
+- API modulable
+- Données synthétiques calibrées
+- Validation robuste
 
 ### Canaux
-- Documentation en ligne via MkDocs
-- Dépôt GitHub pour accès au code source
-- Présentations et ateliers académiques
+- Marketplace logiciels
+- GitHub / SaaS
+- Conférences
 
-### Relations avec les clients
-- Support via issues GitHub
-- Mises à jour régulières du projet
-- Collaboration ouverte et contributions communautaires
-
-### Sources de revenus
-- Financements académiques et subventions
-- Sponsoring institutionnel
-- Éventuelles formations et ateliers payants
+### Relations clients
+- Support technique
+- Documentation complète
+- Formations
 
 ### Ressources clés
-- Équipe de développement et chercheurs
-- Infrastructure de calcul et hébergement
-- Documentation et matériel pédagogique
+- Expertise scientifique
+- Infrastructure cloud
+- Pipelines Docker
 
 ### Activités clés
-- Recherche et développement
-- Maintenance du code et documentation
-- Communication et diffusion
+- Développement logiciel
+- R&D simulation inertielle
+- Création datasets
+- Support
 
 ### Partenariats clés
-- Universités et laboratoires de recherche
-- Communautés open source
-- Organismes de financement
+- Universités
+- Fournisseurs de données (IGN, météo)
+- Plateformes cloud
 
 ### Structure des coûts
-- Coûts de développement et maintenance
-- Hébergement et infrastructure
-- Marketing et diffusion
+- Développement
+- Données tierces
+- R&D
+
+### Revenus
+- Licences / abonnements
+- API SaaS
+- Consulting
+- Jeux de données premium

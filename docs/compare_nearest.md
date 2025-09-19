@@ -1,15 +1,15 @@
-# Comparaison locale par plus proches voisins (OSM vs BD TOPO)
+# 🔍 Comparaison par plus proches voisins — OSM vs BD TOPO
 
-## Méthode
-- Centroïdes des segments (EPSG:2154) enregistrés dans les tables ETL.
-- Index **grille** (cellule = `--max-dist`) pour récupérer des candidats BD autour d’un point OSM.
-- Si `--match-class` est activé, on n’accepte que les candidats de **même classe** (`road_class` / `class` / `highway` / `nature`).
+Analyse produite avec `tools/compare_nearest.py`.
 
-## Commandes
-```bash
-python tools/compare_nearest.py \
-  --in-dir /Users/.../ref/roadinfo \
-  --osm-name roadinfo_segments_osm.parquet \
-  --bd-name  roadinfo_segments_bdtopo.parquet \
-  --max-dist 30 \
-  --match-class
+| Metric              | count   | mean     | std     | min     | 25%     | 50%     | 75%     | max     |
+|---------------------|---------|----------|---------|---------|---------|---------|---------|---------|
+| diff_length_m       | 653 548 | -158.9 m | 230.9 m | -9933 m | -208 m  | -81 m   | -21 m   | 2145 m  |
+| diff_radius_min_m   | 138 046 | 7.41e+07 | 4.73e+07| -5.33e9 | 6.79e+07| 9.04e+07| 9.37e+07| 9.37e+07|
+| diff_curv_mean_1perm| 653 548 | -0.012   | 0.012   | -0.067  | -0.017  | -0.009  | -0.003  | 3.4e-07 |
+
+- BD TOPO → longueurs plus grandes
+- BD TOPO → courbure moyenne légèrement plus forte
+- Rayons de courbure très différents (écarts énormes liés à la modélisation)
+
+📂 Résultats CSV : `compare__nearest_diffs.csv`

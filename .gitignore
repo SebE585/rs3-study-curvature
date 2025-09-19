@@ -1,16 +1,13 @@
 # venv & Python
 .venv/
+.anaconda/
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
 # data
-/data/*.parquet
-/data/*.feather
-/data/*.gpkg
-/data/*.tif
-/data/raw/
+/data/*
 !/data/.gitkeep
 
 # notebooks/outputs

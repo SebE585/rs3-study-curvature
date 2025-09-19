@@ -1,5 +1,12 @@
-# RS3 — Curvature Study
+# RS3 — Étude de la courbure routière
 
-Ce site documente l'étude des **rayons de courbure** issus de BD TOPO et leurs **implications pour a_lat = v^2/r** et \(\omega_z = v/r\) dans RS3.
+Bienvenue sur la documentation du projet **RS3 Study Curvature**.  
+Ce site présente :
 
-➡️ Lisez ensuite **Paper → Aperçu**.
+- la méthodologie de calcul de la courbure et de la pente,
+- la comparaison entre **BD TOPO®** et **OpenStreetMap**,
+- les résultats statistiques et visuels,
+- les jeux de données et la reproductibilité,
+- une présentation produit (Elevator Speech + Business Model Canvas).
+
+👉 Pour commencer : lisez [Paper](paper.md) pour l’aperçu scientifique, ou [Produit](product.md) pour le cadrage marché.
