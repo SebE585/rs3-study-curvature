@@ -1,13 +1,22 @@
 site_name: RS3 — Curvature Study
 site_description: Étude des rayons de courbure et implications pour a_lat = v^2/r
+site_url: https://sebe585.github.io/rs3-study-curvature/
 repo_url: https://github.com/SebE585/rs3-study-curvature
+repo_name: SebE585/rs3-study-curvature
+edit_uri: edit/main/docs/
+
 theme:
   name: material
   features:
     - navigation.sections
     - navigation.expand
+    - navigation.top         # barre de nav collante
     - content.code.copy
     - toc.integrate
+  icon:
+    logo: material/road-variant # changeable par un logo local si vous en avez un
+  favicon: assets/img/favicon.png  # placez un favicon ici si vous en avez un
+
 markdown_extensions:
   - admonition
   - attr_list
@@ -17,8 +26,10 @@ markdown_extensions:
   - pymdownx.arithmatex: { generic: true }
   - pymdownx.details
   - pymdownx.superfences
+
 extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
 plugins:
   - search
   - mkdocstrings:
@@ -27,6 +38,12 @@ plugins:
           options:
             show_root_full_path: false
             docstring_style: google
+  - git-revision-date-localized:
+      type: date
+      fallback_to_build_date: true
+  - minify:
+      minify_html: true
+
 nav:
   - Accueil: index.md
   - Méthode: method.md
