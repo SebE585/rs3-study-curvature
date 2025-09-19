@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+title: "rs3-study-curvature"
+message: "If you use this work, please cite us."
+authors:
+  - family-names: Edet
+    given-names: Sébastien
+license: MIT
+version: 0.1.0

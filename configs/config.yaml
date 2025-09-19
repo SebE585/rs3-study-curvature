@@ -1,0 +1,51 @@
+inputs:
+  # BD TOPO (IGN) – adapte le chemin exact si besoin
+  bdtopo_gpkg: "/Users/sebastien.edet/rs3-data/bdtopo/troncon_de_route.gpkg"
+  dem_tif: null
+  osm_pbf: "/Users/sebastien.edet/rs3-data/osm/haute-normandie-250917.osm.pbf"
+
+processing:
+  # --- Mode single-run (compatibilité actuelle) ---
+  source: bdtopo                 # "bdtopo" ou "osm" pour le run simple actuel
+  layer: "troncon_de_route"     # couche GPKG pour BD TOPO
+
+  crs_meters: "EPSG:2154"
+  bbox: [0.0, 48.9, 1.8, 50.1]   # WGS84 (lon/lat), Haute-Normandie (Eure + Seine-Maritime)
+  simplify_tol_m: 0.5
+  densify_step_m: 5.0
+  min_seg_len_m: 15.0
+  curvature:
+    robust_percentile: 85
+    clip_radius_min_m: 15
+  slope:
+    enabled: false               # mets true si DEM dispo et aligné
+
+  # Filtre OSM (utile en single-run source: osm)
+  osm:
+    highways: ["motorway","trunk","primary","secondary","tertiary","unclassified","residential","service"]
+
+  # --- Mode multi-run (nouvelle section pour produire OSM + BD TOPO) ---
+  multi:
+    enabled: true                # Quand on patchera compute_curvature.py pour itérer sur ces runs
+    runs:
+      - name: osm
+        source: osm
+        # la bbox WGS84 ci-dessus est réutilisée; le CRS cible est crs_meters
+        highways: ["motorway","trunk","primary","secondary","tertiary","unclassified","residential","service"]
+        out_suffix: "_osm"
+      - name: bdtopo
+        source: bdtopo
+        layer: "troncon_de_route"
+        out_suffix: "_bdtopo"
+
+outputs:
+  dir: "/Users/sebastien.edet/rs3-data/ref/roadinfo"
+  # Noms single-run (compatibilité)
+  segments_parquet: "roadinfo_segments.parquet"
+  profile_parquet:  "roadinfo_profile.parquet"
+  # Modèles multi-run : le code utilisera {suffix} pour distinguer OSM vs BD TOPO
+  segments_pattern: "roadinfo_segments{suffix}.parquet"
+  profile_pattern:  "roadinfo_profile{suffix}.parquet"
+
+meta:
+  alg_ver: roadinfo-0.1.0

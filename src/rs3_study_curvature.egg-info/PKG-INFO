@@ -1,0 +1,57 @@
+Metadata-Version: 2.4
+Name: rs3-study-curvature
+Version: 0.1.0
+Summary: Curvature study for RS3: BD TOPO + DEM → v^2/r
+Author: Sébastien EDET
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: geopandas>=0.14
+Requires-Dist: shapely>=2.0
+Requires-Dist: pyproj>=3.6
+Requires-Dist: rasterio>=1.3
+Requires-Dist: numpy>=1.26
+Requires-Dist: pandas>=2.1
+Requires-Dist: matplotlib>=3.8
+Requires-Dist: scipy>=1.11
+Requires-Dist: pytest>=7.4
+Provides-Extra: docs
+Requires-Dist: mkdocs>=1.6; extra == "docs"
+Requires-Dist: mkdocs-material>=9.5; extra == "docs"
+Requires-Dist: mkdocstrings[python]>=0.25; extra == "docs"
+Dynamic: license-file
+
+# rs3-study-curvature
+
+Étude amont sur les **rayons de courbure routiers** (BD TOPO + DEM) et impact sur la simulation inertielle (\(a_\text{lat}=v^2/r\)) dans RoadSimulator3. Repo prêt pour GitHub : code Python (ETL + stats), tests, et **article scientifique** avec **MkDocs**.
+
+## ⚙️ Installation rapide
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -U pip
+pip install -e .
+```
+
+## 🏗️ Construire le jeu dérivé (curvature)
+1. Placez vos fichiers dans `data/raw/` :
+   - `bdtopo_transport.gpkg`
+   - `dem.tif` (optionnel)
+2. Copiez et éditez `configs/config.example.yaml`.
+3. Lancez l'ETL :
+```bash
+python -m rs3_study_curvature.cli.build_curvature --config configs/config.yaml
+```
+
+## 🧪 Tests
+```bash
+pytest -q
+```
+
+## 📝 Paper (MkDocs)
+```bash
+mkdocs serve  # preview local
+```
+Déploiement GitHub Pages automatisé via GitHub Actions (`.github/workflows/pages.yml`).
+
+## Licence
+MIT (code) — citez ce dépôt si vous réutilisez les scripts.

@@ -1,0 +1,21 @@
+inputs:
+  bdtopo_gpkg: data/raw/bdtopo_transport.gpkg
+  dem_tif: data/raw/dem.tif   # optionnel
+processing:
+  crs_meters: EPSG:2154
+  simplify_tol_m: 0.5
+  densify_step_m: 5.0
+  min_seg_len_m: 15.0
+  curvature:
+    window_pts: 3
+    robust_percentile: 85
+    clip_radius_min_m: 15
+  slope:
+    enabled: true
+    sample_method: bilinear
+outputs:
+  dir: data/derived/
+  segments_parquet: roadinfo_segments.parquet
+  profile_parquet: roadinfo_profile.parquet
+meta:
+  alg_ver: study-curvature-0.1.0

@@ -1,0 +1,13 @@
+LICENSE
+README.md
+pyproject.toml
+src/rs3_study_curvature/__init__.py
+src/rs3_study_curvature.egg-info/PKG-INFO
+src/rs3_study_curvature.egg-info/SOURCES.txt
+src/rs3_study_curvature.egg-info/dependency_links.txt
+src/rs3_study_curvature.egg-info/requires.txt
+src/rs3_study_curvature.egg-info/top_level.txt
+src/rs3_study_curvature/analysis/stats.py
+src/rs3_study_curvature/cli/build_curvature.py
+src/rs3_study_curvature/etl/compute_curvature.py
+tests/test_curvature.py

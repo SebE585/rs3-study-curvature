@@ -1,0 +1,21 @@
+# venv & Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# data
+/data/*.parquet
+/data/*.feather
+/data/*.gpkg
+/data/*.tif
+/data/raw/
+!/data/.gitkeep
+
+# notebooks/outputs
+*.ipynb_checkpoints/
+.DS_Store
+
+# mkdocs site build
+/site/

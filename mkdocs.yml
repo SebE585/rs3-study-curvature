@@ -1,0 +1,41 @@
+site_name: RS3 — Curvature Study
+site_description: Étude des rayons de courbure et implications pour a_lat = v^2/r
+repo_url: https://github.com/USER/rs3-study-curvature
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.expand
+    - content.code.copy
+    - toc.integrate
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - pymdownx.arithmatex: { generic: true }
+  - pymdownx.details
+  - pymdownx.superfences
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_root_full_path: false
+            docstring_style: google
+nav:
+  - Accueil: index.md
+  - Paper:
+    - paper.md
+    - method.md
+    - datasets.md
+    - results.md
+    - reproducibility.md
+  - Analyses:
+    - "Résultats rapides": compare_quick.md
+    - "Plus proches voisins": compare_nearest.md
+  - "Synthèse": summary_article.md
