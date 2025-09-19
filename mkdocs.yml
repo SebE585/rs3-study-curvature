@@ -34,7 +34,9 @@ nav:
   - Comparaisons:
       - Vue rapide: compare_quick.md
       - Appariement local: compare_nearest.md
-  - Produit: product.md
+  - Hotspots: hotspots.md
+  - Discussion: discussion.md
+  - Article (long): article.md
   - Jeux de données: datasets.md
   - Reproductibilité: reproducibility.md
   - Paper (aperçu): paper.md
