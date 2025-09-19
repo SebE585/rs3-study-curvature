@@ -3,11 +3,11 @@ site_description: Étude des rayons de courbure et implications pour a_lat = v^2
 site_url: https://sebe585.github.io/rs3-study-curvature/
 repo_url: https://github.com/SebE585/rs3-study-curvature
 repo_name: SebE585/rs3-study-curvature
-language: fr
 edit_uri: edit/main/docs/
 
 theme:
   name: material
+  language: fr
   features:
     - navigation.sections
     - navigation.expand
@@ -57,8 +57,6 @@ plugins:
   - git-revision-date-localized:
       type: date
       fallback_to_build_date: true
-  - minify:
-      minify_html: true
 
 nav:
   - Accueil: index.md
