@@ -36,9 +36,9 @@ Nous comparons des métriques de courbure et de pente dérivées de deux sources
 > Remarque : OSM est **plus segmenté** (explode) → longueurs moyennes plus faibles.
 
 ### Distributions (clippées à q=0,99)
-![](../rs3-data/ref/roadinfo/compare__hist_length_m.png)
-![](../rs3-data/ref/roadinfo/compare__hist_radius_min_m.png)
-![](../rs3-data/ref/roadinfo/compare__hist_curv_mean_1perm.png)
+![](/assets/img/compare__hist_length_m.png)
+![](/assets/img/compare__hist_radius_min_m.png)
+![](/assets/img/compare__hist_curv_mean_1perm.png)
 
 ### Appariement « nearest neighbor »
 Résumé des différences OSM − BD TOPO (par centroïde, 1 voisin) :

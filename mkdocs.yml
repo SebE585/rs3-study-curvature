@@ -29,13 +29,12 @@ plugins:
             docstring_style: google
 nav:
   - Accueil: index.md
-  - Paper:
-    - paper.md
-    - method.md
-    - datasets.md
-    - results.md
-    - reproducibility.md
-  - Analyses:
-    - "Résultats rapides": compare_quick.md
-    - "Plus proches voisins": compare_nearest.md
-  - "Synthèse": summary_article.md
+  - Méthode: method.md
+  - Résultats: results.md
+  - Comparaisons:
+      - Vue rapide: compare_quick.md
+      - Appariement local: compare_nearest.md
+  - Article: article.md
+  - Jeux de données: datasets.md
+  - Reproductibilité: reproducibility.md
+  - Paper (aperçu): paper.md
