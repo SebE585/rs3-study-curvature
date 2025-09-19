@@ -1,6 +1,6 @@
 site_name: RS3 — Curvature Study
 site_description: Étude des rayons de courbure et implications pour a_lat = v^2/r
-repo_url: https://github.com/USER/rs3-study-curvature
+repo_url: https://github.com/SebE585/rs3-study-curvature
 theme:
   name: material
   features:
