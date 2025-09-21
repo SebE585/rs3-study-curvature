@@ -1,93 +1,89 @@
-## Couverture des appariements (sans contrainte de classe) 📊
+# Couverture des appariements sans contrainte de classe 📊
 
-- d = 20 m : 206 264 / 653 548 segments OSM appariés.  
-- d = 30 m : 291 090 / 653 548 appariés.  
-- d = 50 m : 417 688 / 653 548 appariés.  
+| Distance (m) | Nombre d’appariements | Total segments OSM |
+|-------------:|---------------------:|-------------------:|
+|          20  |              206 264 |           653 548  |
+|          30  |              291 090 |           653 548  |
+|          50  |              417 688 |           653 548  |
 
-## Écarts globaux OSM − BDTOPO (sans contrainte de classe, `--drop-inf`) 📈
+---
 
-### d = 20 m
-- **Δ `length_m`** :  
-  - moyenne : −62,88 m  
-  - médiane : −26,66 m  
-  - **OSM plus court** par segment.
-- **Δ `curv_mean_1perm`** :  
-  - moyenne : −0,01223  
-  - **OSM plus « souple » en moyenne**.
-- **Δ `radius_min_m`** :  
-  - moyenne : 6,88×10^7 m  
-  - distribution très étalée, extrêmes présents.
+# Écarts globaux OSM − BDTOPO sans contrainte de classe (`--drop-inf`) 📈
 
-> **Lecture**  
-> En augmentant d, le taux d’appariements croît, mais le biais de longueur (**OSM plus court**) s’amplifie et la courbure moyenne reste plus faible côté OSM (segments plus « rectilignes »/simplifiés en moyenne).
+## Résumé des écarts par distance
 
-### d = 30 m
-- **Δ `length_m`** :  
-  - moyenne : −75,58 m  
-  - médiane : −36,71 m.
-- **Δ `curv_mean_1perm`** :  
-  - moyenne : −0,01262.
-- **Δ `radius_min_m`** :  
-  - moyenne : 7,03×10^7 m.
+| Distance (m) | Δ longueur moyenne (m) | Δ longueur médiane (m) | Δ courbure moyenne (1/m) | Δ rayon minimal moyen (×10^7 m) |
+|-------------:|-----------------------:|-----------------------:|-------------------------:|-------------------------------:|
+|          20  |                −62,88  |                −26,66  |                 −0,01223 |                          6,88  |
+|          30  |                −75,58  |                −36,71  |                 −0,01262 |                          7,03  |
+|          50  |                −93,86  |                −49,82  |                 −0,01268 |                          7,17  |
 
-### d = 50 m
-- **Δ `length_m`** :  
-  - moyenne : −93,86 m  
-  - médiane : −49,82 m.
-- **Δ `curv_mean_1perm`** :  
-  - moyenne : −0,01268.
-- **Δ `radius_min_m`** :  
-  - moyenne : 7,17×10^7 m.
+### Synthèse
 
-## Effet de la contrainte de classe (avec `--match-class` `--class-map configs/class_map.yml`) 🎯
+Augmenter la distance d’appariement augmente nettement le nombre de segments couverts. Cependant, cela engendre un biais croissant sur la longueur (OSM plus court) et une courbure moyenne plus faible côté OSM, indiquant une simplification ou une rectilinéarité accrue des segments.
 
-- d = 30 m → 9 282 appariements respectant l’égalité de classes normalisées (OSM vs BD, après mapping).
-- **Δ `length_m`** :  
-  - moyenne : −106,73 m  
-  - écart plus marqué que le global.
-- **Δ `curv_mean_1perm`** :  
-  - moyenne : −0,00662  
-  - réduction de l’écart de courbure quand les classes sont homogènes.
-- **Δ `radius_min_m`** :  
-  - moyenne : 6,59×10^7 m.
+---
 
-> **Lecture**  
-> En contraignant les classes, on réduit l’inhomogénéité fonctionnelle entre réseaux, ce qui atténue l’écart sur la courbure moyenne (mais accentue l’écart de longueur par segment — segmentation et modélisation restent différentes).
+# Effet de la contrainte de classe avec `--match-class` et `--class-map` 🎯
 
-## Sensibilité à la distance d 🔍
+| Indicateur            | Moyenne          |
+|----------------------|-----------------:|
+| Nombre d’appariements |           9 282  |
+| Δ longueur (m)        |      −106,73     |
+| Δ courbure moyenne    |       −0,00662   |
+| Δ rayon minimal (×10^7 m) |      6,59     |
 
-Les quantiles exportés (p. ex. `nearest_quants_d20.csv`, `nearest_quants_d30.csv`, `nearest_quants_d50.csv`) montrent :
+### Synthèse
 
-- des médianes **Δ `length_m`** toujours < 0 (**OSM plus court**),
-- des queues asymétriques (grands négatifs liés à des découpages BDTOPO moins segmentés / tronçons plus longs).
+La contrainte de classe améliore l’homogénéité fonctionnelle entre réseaux, réduisant l’écart de courbure. En revanche, le biais sur la longueur s’accentue, reflétant des différences dans la segmentation et la modélisation.
 
-## Fichiers produits (exemples) 📁
+---
 
-- [x] Résumés (sans contrainte) : `nearest_diffs_d20.csv`, `nearest_diffs_d30.csv`, `nearest_diffs_d50.csv`.  
-- [x] Quantiles : `nearest_quants_d{20,30,50}.csv`.  
-- [x] Contraint classe (d=30 m) : `compare__nearest_diffs.csv`, `compare__nearest_quantiles.csv`, `compare__nearest_matches.csv`, `compare__nearest_byclass.csv`, `compare__nearest_links.gpkg`.  
-- [x] Diagnostics classes : `compare__class_stats.csv`.  
+# Sensibilité à la distance d 🔍
 
-## Bandes de quantiles vs distance de rapprochement 📉
+Les fichiers de quantiles générés (*nearest_quants_d20.csv*, *nearest_quants_d30.csv*, *nearest_quants_d50.csv*) montrent que :
 
-![](assets/img/quantiles/quantiles_diff_length_m.png)  
-*Figure : Différence de longueur en fonction de d*
+- Les médianes de Δ longueur sont toujours négatives (OSM plus court).
+- Les distributions présentent des queues asymétriques, avec des valeurs négatives importantes dues à des découpages BDTOPO moins segmentés.
+- Le nombre d’appariements augmente avec la distance d (de 206 264 à 417 688).
+- Les quantiles utilisés sont 0.10, 0.25, 0.50, 0.75 et 0.90, configurables selon les besoins, offrant une meilleure granularité dans l’interprétation.
 
-![](assets/img/quantiles/quantiles_diff_radius_min_m.png)  
-*Figure : Différence du rayon minimum en fonction de d*
+---
 
-![](assets/img/quantiles/quantiles_diff_curv_mean_1perm.png)  
-*Figure : Différence de la courbure moyenne en fonction de d*
+# Fichiers produits (exemples) 📁
 
-## Implications produit et marché 🚀
+- [x] Résumés (sans contrainte) : *nearest_diffs_d20.csv*, *nearest_diffs_d30.csv*, *nearest_diffs_d50.csv*  
+- [x] Quantiles : *nearest_quants_d{20,30,50}.csv*  
+- [x] Contraintes de classe (d=30 m) : *compare__nearest_diffs.csv*, *compare__nearest_quantiles.csv*, *compare__nearest_matches.csv*, *compare__nearest_byclass.csv*, *compare__nearest_links.gpkg*  
+- [x] Diagnostics classes : *compare__class_stats.csv*  
 
-Les résultats de comparaison OSM vs BD TOPO renforcent la valeur du simulateur **RoadSimulator3**, car ils illustrent comment l’outil permet de quantifier objectivement les écarts entre différentes bases de données de référence. Cette capacité à mesurer et analyser les différences structurelles entre réseaux routiers apporte un support concret à la validation, à l’alignement et à l’amélioration des données cartographiques utilisées dans de nombreux domaines.
+---
 
-Ces analyses sont cohérentes avec le discours exposé dans le document *[Elevator Speech - RoadSimulator3.pdf]*(Elevator%20Speech%20-%20RoadSimulator3.pdf) (simulateur inertiel réaliste, fusion GPS/IMU, génération de trajectoires synthétiques à 10 Hz), ainsi qu’avec le *[Business Model Canvas]*(https://en.wikipedia.org/wiki/Business_Model_Canvas) (création de valeur pour les assureurs, constructeurs automobiles et smart cities).
+# Bandes de quantiles selon la distance de rapprochement 📉
 
-**Applications directes :**
+![Différence de longueur en fonction de la distance d](assets/img/quantiles/quantiles_diff_length_m.png)  
+*Figure 1 : Différence de longueur*
 
-- Validation et alignement de bases cartographiques hétérogènes (OSM, BD TOPO, autres).  
-- Génération de jeux de données synthétiques pour entraîner des algorithmes de navigation.  
-- Benchmark indépendant pour assureurs, collectivités, start-ups mobilité.  
-- Support scientifique pour publications et communication.
+![Différence du rayon minimal en fonction de la distance d](assets/img/quantiles/quantiles_diff_radius_min_m.png)  
+*Figure 2 : Différence du rayon minimal*
+
+![Différence de la courbure moyenne en fonction de la distance d](assets/img/quantiles/quantiles_diff_curv_mean_1perm.png)  
+*Figure 3 : Différence de la courbure moyenne*
+
+---
+
+# Implications produit et marché 🚀
+
+Les résultats renforcent la valeur du simulateur **RoadSimulator3**, illustrant sa capacité à quantifier objectivement les écarts entre bases de données routières. Cette analyse structurelle soutient la validation, l’alignement et l’amélioration des données cartographiques utilisées dans de nombreux secteurs.
+
+### Applications directes
+
+- Validation et alignement de bases cartographiques hétérogènes (OSM, BD TOPO, autres)  
+- Génération de jeux de données synthétiques pour entraîner des algorithmes de navigation  
+- Benchmark indépendant pour assureurs, collectivités et start-ups mobilité  
+- Support scientifique pour publications et communications  
+
+### Documents associés
+
+- *Elevator Speech - RoadSimulator3.pdf* : simulateur inertiel réaliste, fusion GPS/IMU, génération de trajectoires synthétiques à 10 Hz  
+- *Business Model Canvas* : création de valeur pour assureurs, constructeurs et smart cities
