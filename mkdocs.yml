@@ -54,9 +54,6 @@ plugins:
           options:
             show_root_full_path: false
             docstring_style: google
-  - git-revision-date-localized:
-      type: date
-      fallback_to_build_date: true
 
 nav:
   - Accueil: index.md
@@ -69,3 +66,4 @@ nav:
   - Jeux de données: datasets.md
   - Reproductibilité: reproducibility.md
   - Paper (aperçu): paper.md
+  - Annexes: annexes.md

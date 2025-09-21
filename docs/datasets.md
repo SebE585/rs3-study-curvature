@@ -1,6 +1,15 @@
 # 📚 Jeux de données
 
-- **BD TOPO® — Transport** : tronçons de route IGN
-- **OpenStreetMap (OSM)** : données PBF Haute-Normandie (pyrosm)
-- **MNT (RGE ALTI / Copernicus)** : prévu pour pente
-- Métadonnées : millésimes, hash fichiers → [reproducibility.md](reproducibility.md)
+## BD TOPO® — Transport  
+Tronçons de route fournis par l'IGN.
+
+## OpenStreetMap (OSM)  
+Données PBF pour la région Haute-Normandie, extraites avec pyrosm.
+
+## MNT (RGE ALTI / Copernicus)  
+Données prévues pour l'analyse de la pente.
+
+## Métadonnées  
+- **Millésimes**  
+- **Hash fichiers**  
+Pour plus de détails, voir [reproducibility.md](reproducibility.md).
