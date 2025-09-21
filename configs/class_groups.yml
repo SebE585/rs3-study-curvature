@@ -1,0 +1,34 @@
+# Harmonisation gros-grain pour le matching
+#  - fast: autoroutes, voies rapides
+#  - main: réseau structurant (primary/secondary/tertiary)
+#  - local: desserte locale (residential/unclassified/service)
+#  - nonmotor: non motorisé (path/track/footway/steps/cycleway/ferry)
+fast:
+  - motorway
+  - motorway_link
+  - trunk
+  - trunk_link
+
+main:
+  - primary
+  - primary_link
+  - secondary
+  - secondary_link
+  - tertiary
+  - tertiary_link
+  - junction    # giratoires souvent classés "tertiary" ou similaires
+
+local:
+  - residential
+  - unclassified
+  - service
+  - living_street
+
+nonmotor:
+  - path
+  - track
+  - footway
+  - steps
+  - cycleway
+  - bridleway
+  - ferry

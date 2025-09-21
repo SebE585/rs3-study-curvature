@@ -311,6 +311,25 @@ def build_from_config(cfg_path: Path) -> None:
 
         log.info(f"Couche chargée: {len(gdf):,} tronçons | CRS={gdf.crs}")
 
+        # --- Standardize attribute columns (class/name/maxspeed) for downstream tools ---
+        class_candidates = [
+            "highway",  # OSM
+            "class", "classe", "nature", "type", "CATEGORIE", "CATEGORIE_ROUTE",
+        ]
+        name_candidates = [
+            "name",  # OSM
+            "nom", "NOM", "NOM_VOIE", "NOM_ITI", "LIBELLE", "LIBELLE_VOIE",
+        ]
+        class_col = next((c for c in class_candidates if c in gdf.columns), None)
+        name_col = next((c for c in name_candidates if c in gdf.columns), None)
+        maxspeed_col = "maxspeed" if "maxspeed" in gdf.columns else None
+        if class_col:
+            log.info(f"Colonne classe détectée: '{class_col}' → sera exportée comme 'class'.")
+        if name_col:
+            log.info(f"Colonne nom détectée: '{name_col}' → sera exportée comme 'name'.")
+        if maxspeed_col:
+            log.info("Colonne 'maxspeed' détectée → exportée telle quelle.")
+
         seg_rows, prof_rows = [], []
         log.info("Début du calcul de courbure/pente…")
         for _, r in tqdm(gdf.iterrows(), total=len(gdf), desc="curvature", unit="seg"):
@@ -359,6 +378,10 @@ def build_from_config(cfg_path: Path) -> None:
                 "slope_p95_pct": slope_p95,
                 "is_straight": is_straight,
                 "source": src,
+                # standardized attributes (if present)
+                "class": (str(r.get(class_col)) if class_col is not None and pd.notna(r.get(class_col)) else None),
+                "name": (str(r.get(name_col)) if name_col is not None and pd.notna(r.get(name_col)) else None),
+                "maxspeed": (str(r.get(maxspeed_col)) if maxspeed_col is not None and pd.notna(r.get(maxspeed_col)) else None),
             })
             prof["road_id"] = road_id
             prof["source"] = src

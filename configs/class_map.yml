@@ -1,0 +1,147 @@
+
+# === RS3 class map — BD TOPO (nature) & local FR labels → OSM highway ===
+# Notes:
+# - Matching is case-insensitive; accents and extra spaces are normalized upstream.
+# - Keys here must be the *normalized* French labels you expect from BD TOPO / local tags.
+# - When in doubt, add both accented and unaccented variants.
+
+# --- Aliases OSM (collapse *_link to parent class) ---
+# These help match OSM slip roads to BD TOPO categories by removing the _link suffix
+"motorway_link": motorway
+"trunk_link": trunk
+"primary_link": primary
+"secondary_link": secondary
+"tertiary_link": tertiary
+
+# --- Axes principaux / hiérarchie ---
+"route a 1 chaussee": primary
+"route à 1 chaussée": primary
+"route a 2 chaussees": trunk
+"route à 2 chaussées": trunk
+"route a chaussees separees": trunk
+"route à chaussées séparées": trunk
+"route express": trunk
+"voie rapide": trunk
+"rocade": trunk
+"peripherique": trunk
+"périphérique": trunk
+"type autoroutier": motorway
+"autoroute": motorway
+
+# Bretelles / échangeurs
+"bretelle": trunk_link
+"bretelle d'acces": trunk_link
+"bretelle d'accès": trunk_link
+"bretelle de sortie": trunk_link
+"bretelle d'entree": trunk_link
+"bretelle d'entrée": trunk_link
+"motorway_link": motorway
+
+# Giratoires / carrefours
+"rond-point": unclassified  # OSM n'a pas 'junction' comme highway; on le rapproche du réseau ordinaire
+"rond point": unclassified  # OSM n'a pas 'junction' comme highway; on le rapproche du réseau ordinaire
+"carrefour giratoire": unclassified  # OSM n'a pas 'junction' comme highway; on le rapproche du réseau ordinaire
+"giratoire urbain": unclassified  # OSM n'a pas 'junction' comme highway; on le rapproche du réseau ordinaire
+"giratoire principal": unclassified  # OSM n'a pas 'junction' comme highway; on le rapproche du réseau ordinaire
+"junction": unclassified  # OSM n'a pas 'junction' comme highway; on le rapproche du réseau ordinaire
+
+# --- Desserte locale / urbain fin ---
+"voie locale": residential
+"voie locale de desserte": residential
+"voie de quartier": residential
+"rue locale": residential
+"allee": residential
+"allée": residential
+"voie de lotissement": residential
+"impasse residentielle": residential
+"impasse résidentielle": residential
+"dessertes residentielles": residential
+"dessertes résidentielles": residential
+"voirie interne": service
+"chemin de desserte": service
+"voie privee": service
+"voie privée": service
+"voie privee interne": service
+"voie privée interne": service
+"chemin prive interne": service
+"chemin privé interne": service
+"voie d'acces": service
+"voie d'accès": service
+"cours": living_street
+"zone de rencontre": living_street
+"rue pietonne": pedestrian
+"rue piétonne": pedestrian
+
+# Communales / locales génériques
+"voie communale": unclassified
+"voie communale de desserte": unclassified
+"chemin communal": unclassified
+"route locale": unclassified
+"rue principale": primary
+"voie de liaison interquartiers": tertiary
+"route departementale": primary
+"route départementale": primary
+"vc": unclassified
+"voie communale (vc)": unclassified
+"route communale": unclassified
+"route nationale": primary
+"route metropolitaine": primary
+"route métropolitaine": primary
+
+# --- Chemins / non revêtus / forestier ---
+"chemin": track
+"chemin carrossable": track
+"chemin rural": track
+"chemin agricole": track
+"chemin d'exploitation": track
+"chemin forestier": track
+"route forestiere": track
+"route forestière": track
+"route empierree": track
+"route empierrée": track
+"track": track
+
+# Sentiers / piétons nature
+"sentier": path
+"sentier pieton": path
+"sentier piéton": path
+"path": path
+"gr": path
+"chemin de halage": path
+
+# --- Cyclables / modes doux ---
+"voie verte": cycleway
+"piste verte": cycleway
+"piste cyclable": cycleway
+"piste cyclable sur chaussee": cycleway
+"piste cyclable sur chaussée": cycleway
+"piste cyclable separee": cycleway
+"piste cyclable séparée": cycleway
+"bande cyclable": cycleway
+"bande cyclable bidirectionnelle": cycleway
+"bande cyclable unidirectionnelle": cycleway
+"voie verte urbaine": cycleway
+
+# Piétons (urbain)
+"chemin pieton": footway
+"chemin piéton": footway
+"passage pieton sur passerelle": footway
+"passage piéton sur passerelle": footway
+"escalier": steps
+"escalier mecanique": steps
+"escalier mécanique": steps
+"steps": steps
+"cheminement pieton": footway
+"cheminement piéton": footway
+"passerelle pietonne": footway
+"passerelle piétonne": footway
+
+# --- Annexes / autres ---
+"bac ou liaison maritime": ferry
+"liaison maritime": ferry
+"bac": ferry
+"ferry": ferry
+
+# --- Filet de sécurité orthographique (prudence) ---
+"chaussee": primary
+"chaussée": primary

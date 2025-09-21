@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-compare_quick.py — comparatif rapide OSM vs BD TOPO à partir des fichiers segments *.parquet
-
-- Lit deux fichiers parquet (pandas) : roadinfo_segments_osm.parquet et *_bdtopo.parquet
-- Produit :
-  - compare__summary_segments.csv : stats globales par source
-  - compare__hist_length_m.png, compare__hist_radius_min_m.png, compare__hist_curv_mean_1perm.png
-- Gestion robuste des NaN/Inf et coupe au 99e centile (configurable)
+Résumé global OSM vs BD TOPO :
+- statistiques agrégées
+- histogrammes (clippés au quantile q)
+- gestion des infinis optionnelle pour radius_min_m
 """
 
 from __future__ import annotations
@@ -18,51 +15,49 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def _finite_series(s: pd.Series) -> pd.Series:
-    """Retourne uniquement les valeurs finies (ni NaN, ni ±inf)."""
-    return s.replace([np.inf, -np.inf], np.nan).dropna()
+def _read_parquet(path: Path) -> pd.DataFrame:
+    # On lit comme Pandas (non-Geo) car les Parquet générés ne portent pas toujours les meta GeoPandas
+    return pd.read_parquet(path)
 
 
-def _robust_clip(s: pd.Series, q: float = 0.99) -> pd.Series:
-    """Coupe la série au quantile q (par défaut 99e centile) après nettoyage."""
-    s2 = _finite_series(s)
-    if s2.empty:
-        return s2
-    upper = s2.quantile(q)
-    return s2.clip(upper=upper)
+def _fmt_km(x: float) -> float:
+    return float(x) / 1000.0
 
 
-def quick_summary(df: pd.DataFrame, name: str) -> dict:
-    rmin = _finite_series(df["radius_min_m"])
+def quick_summary(df: pd.DataFrame, name: str, drop_inf: bool) -> dict:
+    rmin = df["radius_min_m"]
+    if drop_inf:
+        rmin = rmin.replace([np.inf, -np.inf], np.nan).dropna()
+
     out = {
         "source": name,
         "n_segments": int(len(df)),
         "len_m_mean": float(df["length_m"].mean()),
         "len_m_median": float(df["length_m"].median()),
-        "len_m_sum_km": float(df["length_m"].sum() / 1000.0),
-        "rmin_p10": float(np.nanpercentile(rmin.values, 10)) if len(rmin) else np.nan,
-        "rmin_p50": float(np.nanpercentile(rmin.values, 50)) if len(rmin) else np.nan,
-        "rmin_p90": float(np.nanpercentile(rmin.values, 90)) if len(rmin) else np.nan,
-        "curv_mean_med": float(_finite_series(df["curv_mean_1perm"]).median()),
+        "len_m_sum_km": _fmt_km(float(df["length_m"].sum())),
+        "rmin_p10": float(np.nanpercentile(rmin, 10)) if len(rmin) else np.nan,
+        "rmin_p50": float(np.nanpercentile(rmin, 50)) if len(rmin) else np.nan,
+        "rmin_p90": float(np.nanpercentile(rmin, 90)) if len(rmin) else np.nan,
+        "curv_mean_med": float(df["curv_mean_1perm"].median()),
     }
     return out
 
 
-def make_hists(osm: pd.DataFrame, bd: pd.DataFrame, out_dir: Path, q: float = 0.99) -> None:
-    plots = [
-        ("length_m", "Longueur [m]"),
-        ("radius_min_m", "Rayon minimal [m]"),
-        ("curv_mean_1perm", "Courbure moyenne [1/m]"),
-    ]
-    for col, title in plots:
-        osm_v = _robust_clip(osm[col], q=q)
-        bd_v  = _robust_clip(bd[col], q=q)
+def write_hists(osm: pd.DataFrame, bd: pd.DataFrame, out_dir: Path, q: float, drop_inf: bool) -> None:
+    out_dir.mkdir(parents=True, exist_ok=True)
 
+    def _clip_series(s: pd.Series, q: float, drop_inf: bool) -> pd.Series:
+        ss = s.copy()
+        if drop_inf:
+            ss = ss.replace([np.inf, -np.inf], np.nan)
+        upper = ss.quantile(q)
+        return ss.clip(upper=upper)
+
+    for col in ["length_m", "radius_min_m", "curv_mean_1perm"]:
         plt.figure()
-        # NB: on ne fixe pas les couleurs (consigne matplotlib “ne pas forcer les couleurs”)
-        osm_v.hist(bins=60, alpha=0.5, label="OSM")
-        bd_v.hist(bins=60, alpha=0.5, label="BD TOPO")
-        plt.title(f"{title} (clip {int(q*100)}e pct)")
+        _clip_series(osm[col], q, drop_inf).dropna().hist(bins=60, alpha=0.5, label="OSM")
+        _clip_series(bd[col], q, drop_inf).dropna().hist(bins=60, alpha=0.5, label="BDTOPO")
+        plt.title(col)
         plt.legend()
         plt.tight_layout()
         png = out_dir / f"compare__hist_{col}.png"
@@ -71,41 +66,32 @@ def make_hists(osm: pd.DataFrame, bd: pd.DataFrame, out_dir: Path, q: float = 0.
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Comparatif rapide OSM vs BD TOPO (segments).")
-    ap.add_argument(
-        "--in-dir",
-        type=Path,
-        default=Path("/Users/sebastien.edet/rs3-data/ref/roadinfo"),
-        help="Dossier contenant les .parquet",
-    )
+    ap = argparse.ArgumentParser(description="Résumé rapide OSM vs BDTOPO (tables Parquet non-geo)")
+    ap.add_argument("--in-dir", type=Path, default=Path("ref/roadinfo"), help="Dossier des sorties")
     ap.add_argument("--osm-name", default="roadinfo_segments_osm.parquet")
-    ap.add_argument("--bd-name",  default="roadinfo_segments_bdtopo.parquet")
-    ap.add_argument("--q", type=float, default=0.99, help="Quantile de clipping pour les histogrammes (0-1).")
+    ap.add_argument("--bd-name", default="roadinfo_segments_bdtopo.parquet")
+    ap.add_argument("--q", type=float, default=0.99, help="Quantile de clipping pour les histogrammes")
+    ap.add_argument("--drop-inf", action="store_true", help="Ignorer ±inf pour radius_min_m")
+    ap.add_argument("--out-summary", default="compare__summary_segments.csv",
+                    help="Nom du CSV résumé")
     args = ap.parse_args()
 
-    out_dir = args.in_dir
-    osm_pq = out_dir / args.osm_name
-    bd_pq  = out_dir / args.bd_name
+    in_dir = args.in_dir
+    out_summary = in_dir / args.out_summary
 
-    if not osm_pq.exists():
-        raise FileNotFoundError(f"Introuvable: {osm_pq}")
-    if not bd_pq.exists():
-        raise FileNotFoundError(f"Introuvable: {bd_pq}")
+    seg_osm = _read_parquet(in_dir / args.osm_name)
+    seg_bd = _read_parquet(in_dir / args.bd_name)
 
-    # IMPORTANT : lire avec pandas (et pas geopandas) car les fichiers n’ont pas de meta geoparquet
-    seg_osm = pd.read_parquet(osm_pq)
-    seg_bd  = pd.read_parquet(bd_pq)
-
-    # Récap global
-    summary = pd.DataFrame([quick_summary(seg_osm, "osm"), quick_summary(seg_bd, "bdtopo")])
-    csv_path = out_dir / "compare__summary_segments.csv"
-    summary.to_csv(csv_path, index=False)
+    summary = pd.DataFrame([
+        quick_summary(seg_osm, "osm", args.drop_inf),
+        quick_summary(seg_bd, "bdtopo", args.drop_inf),
+    ])
     print(summary)
-    print("\nÉcrit:", csv_path)
+    summary.to_csv(out_summary, index=False)
+    print("\nÉcrit:", out_summary)
 
-    # Histogrammes robustes
-    make_hists(seg_osm, seg_bd, out_dir=out_dir, q=args.q)
-    print("PNG écrits dans:", out_dir)
+    write_hists(seg_osm, seg_bd, in_dir, q=args.q, drop_inf=args.drop_inf)
+    print("PNG écrits dans:", in_dir)
 
 
 if __name__ == "__main__":
