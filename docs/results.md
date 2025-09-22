@@ -87,3 +87,52 @@ Les résultats renforcent la valeur du simulateur **RoadSimulator3**, illustrant
 
 - *Elevator Speech - RoadSimulator3.pdf* : simulateur inertiel réaliste, fusion GPS/IMU, génération de trajectoires synthétiques à 10 Hz  
 - *Business Model Canvas* : création de valeur pour assureurs, constructeurs et smart cities
+
+---
+
+# Résultats statistiques globaux 📊
+
+Les tests statistiques (Welch t-test, Kolmogorov–Smirnov, Mann–Whitney) ont été appliqués aux métriques principales.
+
+| Metric      | n_osm   | n_bd    | mean_osm | mean_bd | std_osm | std_bd | diff_mean | t_welch | p_t_welch | ks_stat | p_ks | mw_stat | p_mw | cohens_d | cliffs_delta |
+|-------------|--------:|--------:|---------:|--------:|--------:|-------:|----------:|--------:|----------:|--------:|-----:|--------:|-----:|---------:|-------------:|
+| length_m    | 456 874 | 456 874 | 51.93    | 172.16  | 53.57   | 199.54 | −120.23   | −393.34 | 0.0       | 0.465   | 0.0  | 4.20e10  | 0.0  | −0.82    | −0.60        |
+
+*Tableau 1 : Exemple de résultats statistiques globaux.*
+
+---
+
+# Distributions globales 📈
+
+![Distribution globale des longueurs](assets/reports/global_20250922_095722/length_m__hist_kde.png)
+*Figure 4 : Distribution des longueurs (OSM vs BD TOPO).*  
+
+![Boxplot global des longueurs](assets/reports/global_20250922_095722/length_m__box.png)
+*Figure 5 : Boxplot des longueurs.*
+
+---
+
+# Résultats par classe 🛣️
+
+Les distributions et statistiques sont également produites par classe normalisée de route.
+
+Exemple :
+- motorway, trunk, primary, secondary…
+
+![Exemple distribution par classe](assets/reports/by_class_20250922_103540/motorway/length_m__hist_kde.png)
+*Figure 6 : Distribution des longueurs pour les motorways.*
+
+---
+
+# Bias sweep (distance max d’appariement) 🔍
+
+Les analyses de sensibilité montrent l’effet de la distance max sur les écarts observés.
+
+![Bias sweep longueur](../assets/reports/bias_sweep/quantiles_diff_length_m.png)
+*Figure 7 : Bias sweep — longueur.*
+
+![Bias sweep rayon minimal](../assets/reports/bias_sweep/quantiles_diff_radius_min_m.png)
+*Figure 8 : Bias sweep — rayon minimal.*
+
+![Bias sweep courbure](../assets/reports/bias_sweep/quantiles_diff_curv_mean_1perm.png)
+*Figure 9 : Bias sweep — courbure.*

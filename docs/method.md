@@ -56,3 +56,23 @@ Pour chaque métrique \( m \in \{\texttt{length\_m}, \texttt{radius\_min\_m}, \t
 | **🌐 Segments géo OSM↔BD**           | Fichier *_compare__nearest_links.gpkg_*                  |
 
 ---
+
+## 📈 Analyses statistiques
+
+- **Comparaison globale** :
+  - Tests de normalité implicites remplacés par des tests robustes non paramétriques.
+  - **Welch t-test** (moyennes, distributions à variances différentes).
+  - **Kolmogorov–Smirnov (KS)** (différences de distribution).
+  - **Mann–Whitney U** (distribution des rangs).
+
+- **Mesures d’effet** :
+  - **Cohen’s d** (taille d’effet standardisée, sensible aux distributions normales).
+  - **Cliff’s delta** (mesure robuste de dominance entre distributions).
+
+- **Par classe de route** :
+  - Analyses répétées pour chaque catégorie normalisée (`motorway`, `trunk`, `primary`, `secondary`, etc.).
+  - Visualisations par boxplots et violon plots.
+
+- **Exploration des biais** :
+  - Effet de la distance d’appariement (20 m / 30 m / 50 m).
+  - Influence potentielle de la typologie (urbain vs rural), vitesses maximales et pente.

@@ -60,6 +60,8 @@ nav:
   - Étude courbure:
       - Rapport global: reports/curvature_report.md
       - Rapport par classe: reports/curvature_by_class.md
+      - Bias sweep: reports/bias_sweep.md
+      - Article (brouillon): article_draft.md
       - Méthodes: method.md
       - Résultats: results.md
       - Discussion: discussion.md
