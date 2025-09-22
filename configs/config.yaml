@@ -1,36 +1,54 @@
-inputs:
-  # BD TOPO (IGN) – adapte le chemin exact si besoin
+# RS3 – Étude de la courbure routière
+# Fichier unifié "config.yaml" nettoyé
+# ------------------------------------------------------------
+# 1) SECTION A — Entrées brutes & pipeline de calcul (géométries)
+# 2) SECTION B — Sorties pipeline (parquets segments/profils)
+# 3) SECTION C — Paramètres d'analyse statistique globale (OSM vs BD TOPO)
+#    → Ces clés sont consommées par scripts/run_stats.py et scripts/plot_distributions.py
+# ------------------------------------------------------------
+
+# =============================
+# SECTION A — Données brutes
+# =============================
+raw_inputs:
+  # BD TOPO (IGN) – adapte les chemins si besoin
   bdtopo_gpkg: "/Users/sebastien.edet/rs3-data/bdtopo/troncon_de_route.gpkg"
+  # Modèle numérique de terrain (optionnel)
   dem_tif: null
+  # Extrait OSM en PBF
   osm_pbf: "/Users/sebastien.edet/rs3-data/osm/haute-normandie-250917.osm.pbf"
 
 processing:
   # --- Mode single-run (compatibilité actuelle) ---
-  source: bdtopo                 # "bdtopo" ou "osm" pour le run simple actuel
-  layer: "troncon_de_route"     # couche GPKG pour BD TOPO
+  source: bdtopo                # "bdtopo" ou "osm" pour le run simple actuel
+  layer: "troncon_de_route"    # couche GPKG pour BD TOPO
 
   crs_meters: "EPSG:2154"
-  bbox: [0.0, 48.9, 1.8, 50.1]   # WGS84 (lon/lat), Haute-Normandie (Eure + Seine-Maritime)
+  # BBOX exprimée en WGS84 (lon/lat) — Haute-Normandie (Eure + Seine-Maritime)
+  bbox: [0.0, 48.9, 1.8, 50.1]
+
   simplify_tol_m: 0.5
   densify_step_m: 5.0
   min_seg_len_m: 15.0
+
   curvature:
     robust_percentile: 85
     clip_radius_min_m: 15
+
   slope:
-    enabled: false               # mets true si DEM dispo et aligné
+    enabled: false              # passe à true si DEM dispo et aligné
 
   # Filtre OSM (utile en single-run source: osm)
   osm:
     highways: ["motorway","trunk","primary","secondary","tertiary","unclassified","residential","service"]
 
-  # --- Mode multi-run (nouvelle section pour produire OSM + BD TOPO) ---
+  # --- Mode multi-run (pour produire OSM + BD TOPO) ---
   multi:
-    enabled: true                # Quand on patchera compute_curvature.py pour itérer sur ces runs
+    enabled: true               # quand compute_curvature.py itérera sur ces runs
     runs:
       - name: osm
         source: osm
-        # la bbox WGS84 ci-dessus est réutilisée; le CRS cible est crs_meters
+        # la BBOX WGS84 ci-dessus est réutilisée; le CRS cible est crs_meters
         highways: ["motorway","trunk","primary","secondary","tertiary","unclassified","residential","service"]
         out_suffix: "_osm"
       - name: bdtopo
@@ -38,14 +56,61 @@ processing:
         layer: "troncon_de_route"
         out_suffix: "_bdtopo"
 
-outputs:
+# =============================
+# SECTION B — Sorties du pipeline
+# =============================
+# (renommé pour éviter les collisions avec la SECTION C)
+pipeline_outputs:
   dir: "/Users/sebastien.edet/rs3-data/ref/roadinfo"
   # Noms single-run (compatibilité)
   segments_parquet: "roadinfo_segments.parquet"
   profile_parquet:  "roadinfo_profile.parquet"
-  # Modèles multi-run : le code utilisera {suffix} pour distinguer OSM vs BD TOPO
+  # Modèles multi-run — le code utilisera {suffix} pour distinguer OSM vs BD TOPO
   segments_pattern: "roadinfo_segments{suffix}.parquet"
   profile_pattern:  "roadinfo_profile{suffix}.parquet"
 
 meta:
   alg_ver: roadinfo-0.1.0
+
+# =============================
+# SECTION C — Analyse statistique globale (scripts/*)
+# =============================
+# IMPORTANT : ces clés (inputs/metrics/outputs/hist/kde/fig/random_seed)
+# correspondent au schéma attendu par scripts/run_stats.py et scripts/plot_distributions.py
+
+# Chemins d'entrée pour la comparaison OSM vs BD TOPO —
+# ici on pointe directement vers les sorties "segments" générées par le pipeline multi-run.
+inputs:
+  osm: "/Users/sebastien.edet/rs3-data/ref/roadinfo/roadinfo_segments_osm.parquet"
+  bdtopo: "/Users/sebastien.edet/rs3-data/ref/roadinfo/roadinfo_segments_bdtopo.parquet"
+
+# Colonnes numériques à comparer globalement (doivent exister dans les deux jeux)
+metrics:
+  - name: length_m
+    label: "Longueur (m)"
+
+# (Optionnel) colonne de classe — utile plus tard pour l'analyse par classe
+class_column: "class_norm"   # ex: motorway, primary, ...
+
+# Répertoires de sortie pour les scripts d'analyse
+outputs:
+  root: "out"
+  stats_dir: "out/stats"
+  plots_dir: "out/plots"
+
+# Grille des histogrammes (méthode des bins)
+hist:
+  bins: "fd"     # "auto" | "fd" | entier (ex: 60)
+
+# Densité (KDE) — activable sur les histogrammes
+kde:
+  enabled: true
+
+# Apparence des figures
+fig:
+  dpi: 140
+  width: 9
+  height: 6
+
+# Seed pour reproductibilité de sous-échantillonnages éventuels
+random_seed: 42

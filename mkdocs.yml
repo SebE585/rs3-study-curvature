@@ -57,6 +57,8 @@ plugins:
 
 nav:
   - Accueil: index.md
+  - Étude courbure:
+      - Rapport global: reports/curvature_report.md
   - Méthode: method.md
   - Résultats: results.md
   - Comparaisons:
