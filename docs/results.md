@@ -127,11 +127,11 @@ Voir toutes les figures par classe dans le **Rapport par classe** : [reports/cur
 
 Les analyses de sensibilité montrent l’effet de la distance max sur les écarts observés.
 
-![Bias sweep longueur](../assets/reports/bias_sweep/quantiles_diff_length_m.png)
+![Bias sweep longueur](assets/reports/bias_sweep/quantiles_diff_length_m.png)
 *Figure 7 : Bias sweep — longueur.*
 
-![Bias sweep rayon minimal](../assets/reports/bias_sweep/quantiles_diff_radius_min_m.png)
+![Bias sweep rayon minimal](assets/reports/bias_sweep/quantiles_diff_radius_min_m.png)
 *Figure 8 : Bias sweep — rayon minimal.*
 
-![Bias sweep courbure](../assets/reports/bias_sweep/quantiles_diff_curv_mean_1perm.png)
+![Bias sweep courbure](assets/reports/bias_sweep/quantiles_diff_curv_mean_1perm.png)
 *Figure 9 : Bias sweep — courbure.*
