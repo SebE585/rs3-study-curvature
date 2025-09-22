@@ -21,13 +21,13 @@ L’analyse de sensibilité a évalué l’effet de la distance maximale d’app
 
 ## Visualisations
 
-![Bias sweep longueur](../assets/reports/bias_sweep/quantiles_diff_length_m.png)
+![Bias sweep longueur](assets/reports/bias_sweep/quantiles_diff_length_m.png)
 *Figure : évolution des quantiles des différences de longueur selon la distance d’appariement.*
 
-![Bias sweep rayon](../assets/reports/bias_sweep/quantiles_diff_radius_min_m.png)
+![Bias sweep rayon](assets/reports/bias_sweep/quantiles_diff_radius_min_m.png)
 *Figure : évolution des quantiles des différences de rayon.*
 
-![Bias sweep courbure](../assets/reports/bias_sweep/quantiles_diff_curv_mean_1perm.png)
+![Bias sweep courbure](assets/reports/bias_sweep/quantiles_diff_curv_mean_1perm.png)
 *Figure : évolution des quantiles des différences de courbure.*
 
 ## Interprétation

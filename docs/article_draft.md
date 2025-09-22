@@ -36,18 +36,18 @@
 - Résultats des boxplots et violon plots.
 - Classes montrant des écarts systématiques (motorway, trunk, etc.).
 
-*![Figure X à insérer](path)*
+*Figure X à insérer*
 
 ### Sensibilité à la distance d’appariement
 - Impact de 20 m vs 30 m vs 50 m.
 - Taux d’appariements réussis.
 
-*![Figure Y à insérer](path)*
+*Figure Y à insérer*
 
 ### Autres biais explorés
 - Influence de la pente et des vitesses.
 
-*![Figure Z à insérer](path)*
+*Figure Z à insérer*
 
 ## Discussion
 - Interprétation des divergences observées.

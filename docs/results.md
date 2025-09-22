@@ -119,8 +119,7 @@ Les distributions et statistiques sont également produites par classe normalis�
 Exemple :
 - motorway, trunk, primary, secondary…
 
-![Exemple distribution par classe](assets/reports/by_class_20250922_103540/motorway/length_m__hist_kde.png)
-*Figure 6 : Distribution des longueurs pour les motorways.*
+Voir toutes les figures par classe dans le **Rapport par classe** : [reports/curvature_by_class.md](reports/curvature_by_class.md).
 
 ---
 
