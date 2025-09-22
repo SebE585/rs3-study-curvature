@@ -1,59 +1,30 @@
-## Balayage en distance d ∈ {20,30,50}
+# TODO — Étude de la courbure routière
 
-The following commands run comparisons of nearest segments with different maximum distances (20m, 30m, and 50m):
+## Prochaines étapes scientifiques
 
-```bash
-for d in 20 30 50; do
-  python tools/compare_nearest.py \
-    --in-dir "/Users/sebastien.edet/rs3-data/ref/roadinfo" \
-    --osm-name roadinfo_segments_osm.parquet \
-    --bd-name  roadinfo_segments_bdtopo.parquet \
-    --max-dist $d \
-    --metrics "length_m,radius_min_m,curv_mean_1perm" \
-    --drop-inf \
-    --out-summary "/Users/sebastien.edet/rs3-data/ref/roadinfo/nearest_diffs_d${d}.csv" \
-    --out-quantiles "/Users/sebastien.edet/rs3-data/ref/roadinfo/nearest_quants_d${d}.csv"
-done
-```
+- [ ] **Quantification rigoureuse des écarts**
+  - Appliquer des tests statistiques (Kolmogorov–Smirnov, t-test, ANOVA si nécessaire).
+  - Calculer des intervalles de confiance sur les écarts moyens par métrique.
+  - Vérifier la robustesse selon les distances d’appariement (20, 30, 50 m).
 
-## Diagnostics classes + comparaison contrainte (d=30 m)
+- [ ] **Analyse par classe de route**
+  - Comparer les distributions des métriques (longueur, rayon minimal, courbure moyenne) par classe.
+  - Identifier les classes de routes présentant les écarts les plus marqués.
+  - Visualiser les résultats via boxplots / CDFs par classe.
 
-### Diagnostics classes
+- [ ] **Exploration des biais potentiels**
+  - Évaluer l’influence des erreurs de segmentation sur les métriques.
+  - Contrôler l’impact du filtrage des valeurs infinies ou aberrantes.
 
-This command generates diagnostic statistics for classes at a maximum distance of 30 meters:
+- [ ] **Mise en perspective scientifique**
+  - Formuler une discussion sur la qualité relative d’OSM et de la BD TOPO.
+  - Identifier les limites des bases de données routières actuelles.
+  - Dégager des pistes pour améliorer la modélisation géométrique routière.
 
-```bash
-python tools/compare_nearest.py \
-  --in-dir "/Users/sebastien.edet/rs3-data/ref/roadinfo" \
-  --osm-name roadinfo_segments_osm.parquet \
-  --bd-name  roadinfo_segments_bdtopo.parquet \
-  --max-dist 30 \
-  --class-map configs/class_map.yml \
-  --diag-classes \
-  --out-class-stats "/Users/sebastien.edet/rs3-data/ref/roadinfo/compare__class_stats.csv"
-```
+- [ ] **Préparation à publication**
+  - Rédiger un premier draft de section "Résultats et discussion".
+  - Mettre en forme figures et tableaux de synthèse pour un article.
+  - Cibler un support de publication (conférence, revue).
 
-### Contrainte de classe + exports
-
-This command applies class constraints and exports various summaries and matched data for analysis:
-
-```bash
-python tools/compare_nearest.py \
-  --in-dir "/Users/sebastien.edet/rs3-data/ref/roadinfo" \
-  --osm-name roadinfo_segments_osm.parquet \
-  --bd-name  roadinfo_segments_bdtopo.parquet \
-  --max-dist 30 \
-  --match-class \
-  --class-col-osm class \
-  --class-col-bd  class \
-  --class-map configs/class_map.yml \
-  --metrics "length_m,radius_min_m,curv_mean_1perm" \
-  --drop-inf \
-  --out-summary  "/Users/sebastien.edet/rs3-data/ref/roadinfo/compare__nearest_diffs.csv" \
-  --out-quantiles "/Users/sebastien.edet/rs3-data/ref/roadinfo/compare__nearest_quantiles.csv" \
-  --out-matches  "/Users/sebastien.edet/rs3-data/ref/roadinfo/compare__nearest_matches.csv" \
-  --keep-cols "highway_left,highway_right,maxspeed_left,maxspeed_right" \
-  --per-class \
-  --out-byclass  "/Users/sebastien.edet/rs3-data/ref/roadinfo/compare__nearest_byclass.csv" \
-  --export-geo "/Users/sebastien.edet/rs3-data/ref/roadinfo/compare__nearest_links.gpkg"
-```
+---
+_Mis à jour automatiquement à partir des discussions de recherche._
