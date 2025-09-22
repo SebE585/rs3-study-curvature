@@ -1,11 +1,11 @@
 ---
 title: Rapport comparatif OSM vs BD TOPO
-date: 2025-09-22 09:09:07
+date: 2025-09-22 10:31:01
 ---
 
 # Rapport comparatif OSM vs BD TOPO
 
-_Généré automatiquement le 2025-09-22 09:09:07_
+_Généré automatiquement le 2025-09-22 10:31:01_
 
 ## Points saillants
 - **length_m** : effet fort (Cohen d=-0.82), KS=0.465, Δmoy=-120.226 ↓
@@ -20,6 +20,6 @@ _Généré automatiquement le 2025-09-22 09:09:07_
 
 ### Longueur (m)
 
-![length_m hist](assets/reports/global_20250922_090847/length_m__hist_kde.png)
-![length_m box](assets/reports/global_20250922_090847/length_m__box.png)
-![length_m violin](assets/reports/global_20250922_090847/length_m__violin.png)
+![length_m hist](../assets/reports/global_20250922_095722/length_m__hist_kde.png)
+![length_m box](../assets/reports/global_20250922_095722/length_m__box.png)
+![length_m violin](../assets/reports/global_20250922_095722/length_m__violin.png)

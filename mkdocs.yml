@@ -59,8 +59,11 @@ nav:
   - Accueil: index.md
   - Étude courbure:
       - Rapport global: reports/curvature_report.md
-  - Méthode: method.md
-  - Résultats: results.md
+      - Rapport par classe: reports/curvature_by_class.md
+      - Méthodes: method.md
+      - Résultats: results.md
+      - Discussion: discussion.md
+      - Hotspots: hotspots.md
   - Comparaisons:
       - Vue rapide: compare_quick.md
       - Appariement local: compare_nearest.md

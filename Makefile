@@ -1,4 +1,4 @@
-.PHONY: venv install etl test docs serve figs quantiles stats dists all report report-docs
+.PHONY: venv install etl test docs serve figs quantiles stats dists all report report-docs report-by-class report-by-class-docs bias-sweep bias-sweep-docs
 
 venv:
 	python -m venv .venv && . .venv/bin/activate && pip install -U pip
@@ -82,14 +82,68 @@ report:
 report-docs: report
 	@mkdir -p docs/reports
 	@mkdir -p $(PLOTS_DOCS_DIR)
-	@if [ -d "$(LATEST_PLOTS)" ]; then cp -R $(LATEST_PLOTS)/* $(PLOTS_DOCS_DIR)/; fi
+	@if [ -d "$(LATEST_PLOTS)" ]; then cp -R $(LATEST_PLOTS)/. $(PLOTS_DOCS_DIR)/; fi
 	. .venv/bin/activate && $(PY) scripts/gen_report.py \
 		--config $(CONF) \
 		--stats $(LATEST_STATS) \
 		--plots-dir $(PLOTS_DOCS_DIR) \
-		--docs-rel assets/reports/$(notdir $(LATEST_PLOTS)) \
+		--docs-rel ../assets/reports/$(notdir $(LATEST_PLOTS)) \
 		--out $(REPORT_DOCS)
 	@echo "✅ Rapport + figures prêts pour MkDocs → $(REPORT_DOCS) et $(PLOTS_DOCS_DIR)"
+
+# --- Analyses par classe ---
+stats-by-class:
+	. .venv/bin/activate && $(PY) scripts/run_stats_by_class.py --config $(CONF)
+
+dists-by-class:
+	. .venv/bin/activate && $(PY) scripts/plot_distributions_by_class.py --config $(CONF)
+
+report-by-class:
+	. .venv/bin/activate && $(PY) scripts/gen_report_by_class.py --config $(CONF) --out out/report_by_class.md
+
+report-by-class-docs: report-by-class
+	@mkdir -p docs/reports
+	@mkdir -p docs/assets/reports
+	LATEST_PLOTS_BY_CLASS=$$(ls -dt out/plots/by_class_* 2>/dev/null | head -1); \
+	if [ -n "$$LATEST_PLOTS_BY_CLASS" ]; then \
+	  PLOTS_DOCS_DIR=docs/assets/reports/$$(basename $$LATEST_PLOTS_BY_CLASS); \
+	  mkdir -p $$PLOTS_DOCS_DIR; \
+	  cp -R $$LATEST_PLOTS_BY_CLASS/. $$PLOTS_DOCS_DIR/; \
+	  . .venv/bin/activate && $(PY) scripts/gen_report_by_class.py \
+		--config $(CONF) \
+		--docs-rel ../assets/reports/$$(basename $$LATEST_PLOTS_BY_CLASS) \
+		--out docs/reports/curvature_by_class.md; \
+	  echo "✅ Rapport + figures par classe prêts pour MkDocs → docs/reports/curvature_by_class.md et $$PLOTS_DOCS_DIR"; \
+	else \
+	  echo "[WARN] Aucun plots par classe trouvé"; \
+	fi
+
+# --- Bias sweep (nécessite make quantiles au préalable) ---
+bias-sweep:
+	. .venv/bin/activate && $(PY) scripts/bias_sweep_matching.py \
+		--in-dir "$(QUANTS_DIR)" \
+		--metrics "diff_length_m,diff_radius_min_m,diff_curv_mean_1perm" \
+		--q "0.50" \
+		--out-dir "out/bias_sweep" \
+		--out-md "docs/reports/bias_sweep.md"
+
+bias-sweep-docs: bias-sweep
+	@mkdir -p docs/reports
+	@mkdir -p docs/assets/reports
+	LATEST_BIAS_DIR=$$(ls -dt out/bias_sweep* 2>/dev/null | head -1); \
+	if [ -n "$$LATEST_BIAS_DIR" ]; then \
+	  PLOTS_DOCS_DIR=docs/assets/reports/$$(basename $$LATEST_BIAS_DIR); \
+	  mkdir -p $$PLOTS_DOCS_DIR; \
+	  cp -R $$LATEST_BIAS_DIR/. $$PLOTS_DOCS_DIR/; \
+	  sed -i '' "s|out/bias_sweep|../assets/reports/$$(basename $$LATEST_BIAS_DIR)|g" docs/reports/bias_sweep.md; \
+	  echo "✅ Rapport bias sweep + figures prêts pour MkDocs → docs/reports/bias_sweep.md et $$PLOTS_DOCS_DIR"; \
+	else \
+	  echo "[WARN] Aucun dossier bias_sweep trouvé"; \
+	fi
+
+mkdocs-publish:
+	. .venv/bin/activate && mkdocs build
+	. .venv/bin/activate && mkdocs gh-deploy
 
 # 3) Tout en une passe
 all: stats dists
