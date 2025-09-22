@@ -19,9 +19,14 @@
 - [x] Résumer les résultats quantitatifs avec tableaux et figures.
 - [x] Mettre en avant les points de divergence majeurs.
 - [x] Proposer des interprétations possibles (sources de biais, qualité des données).
-- [ ] Préparer une première version d’article (introduction, méthodes, résultats, discussion).
+- [x] Préparer une première version d’article (introduction, méthodes, résultats, discussion).
+- [ ] Intégrer les résultats sur la courbure (profils, KPIs globaux et par classe) dans l’article.
+- [ ] Rédiger une discussion approfondie sur les biais observés (longueur, rayon, courbure).
 
 ## 🚀 Étapes suivantes
 - [ ] Définir le plan de soumission (revues / conférences pertinentes).
 - [ ] Étendre l’analyse à d’autres régions pour valider la robustesse.
 - [ ] Explorer la généralisation à d’autres bases de données routières.
+- [ ] Finaliser la rédaction et soumettre un draft interne pour relecture.
+- [ ] Automatiser la génération complète (curves-all) et valider la reproductibilité des rapports.
+- [ ] Compléter l’analyse des hotspots (cas locaux extrêmes) si pertinent.

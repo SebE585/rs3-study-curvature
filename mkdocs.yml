@@ -58,6 +58,7 @@ plugins:
 nav:
   - Accueil: index.md
   - Étude courbure:
+      - Rapport courbes (virages): reports/curves_report.md
       - Rapport global: reports/curvature_report.md
       - Rapport par classe: reports/curvature_by_class.md
       - Bias sweep: reports/bias_sweep.md

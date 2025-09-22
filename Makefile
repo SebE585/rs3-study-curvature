@@ -145,6 +145,95 @@ mkdocs-publish:
 	. .venv/bin/activate && mkdocs build
 	. .venv/bin/activate && mkdocs gh-deploy
 
+# --- Analyse des virages / courbure ------------------------------------------
+
+CURVES_OUT := out/curves
+CURVES_LAST := $(shell ls -dt $(CURVES_OUT) 2>/dev/null | head -1)
+
+curves:
+	@mkdir -p out/curves
+	. .venv/bin/activate && $(PY) scripts/extract_curves.py --config $(CONF) --kappa-min 0.0001 --r-max 150 --out-dir out/curves
+
+match-curves: curves
+	. .venv/bin/activate && $(PY) scripts/match_curves.py \
+		--osm out/curves/osm.parquet \
+		--bd  out/curves/bd.parquet \
+		--max-dist 50 \
+		--len-ratio-max 2.0 \
+		--out out/curves/matched.parquet
+
+curve-profiles:
+	. .venv/bin/activate && $(PY) scripts/curve_profiles.py \
+		--config $(CONF) \
+		--curves-osm out/curves/osm.parquet \
+		--curves-bd  out/curves/bd.parquet \
+		--out-dir out/plots
+
+curve-stats: match-curves
+	@mkdir -p out/stats
+	. .venv/bin/activate && $(PY) scripts/curve_metrics.py \
+		--matched out/curves/matched.parquet \
+		--out-csv out/stats/curve_kpis.csv
+
+report-curves: curve-profiles curve-stats
+	@mkdir -p out
+	# prends le dernier dossier de figures curves_*
+	@LATEST_CURVES=$$(ls -dt out/plots/curves_* 2>/dev/null | head -1); \
+	if [ -n "$$LATEST_CURVES" ]; then \
+	  . .venv/bin/activate && $(PY) scripts/gen_report_curves.py \
+		--kpis out/stats/curve_kpis.csv \
+		--plots-dir $$LATEST_CURVES \
+		--out out/curves_report.md; \
+	  echo "✅ Rapport courbure → out/curves_report.md"; \
+	else \
+	  . .venv/bin/activate && $(PY) scripts/gen_report_curves.py \
+		--kpis out/stats/curve_kpis.csv \
+		--out out/curves_report.md; \
+	  echo "⚠️  Rapport généré sans figures (lancez make curve-profiles)"; \
+	fi
+
+report-curves-docs: report-curves
+	@mkdir -p docs/reports
+	@mkdir -p docs/assets/reports
+	@LATEST_CURVES=$$(ls -dt out/plots/curves_* 2>/dev/null | head -1); \
+	if [ -n "$$LATEST_CURVES" ]; then \
+	  PLOTS_DOCS_DIR=docs/assets/reports/$$(basename $$LATEST_CURVES); \
+	  mkdir -p $$PLOTS_DOCS_DIR; \
+	  cp -R $$LATEST_CURVES/. $$PLOTS_DOCS_DIR/; \
+	  . .venv/bin/activate && $(PY) scripts/gen_report_curves.py \
+		--kpis out/stats/curve_kpis.csv \
+		--plots-dir $$LATEST_CURVES \
+		--docs-rel ../assets/reports \
+		--out docs/reports/curves_report.md; \
+	  echo "✅ Rapport + figures courbure prêts → docs/reports/curves_report.md et $$PLOTS_DOCS_DIR"; \
+	else \
+	  . .venv/bin/activate && $(PY) scripts/gen_report_curves.py \
+		--kpis out/stats/curve_kpis.csv \
+		--docs-rel ../assets/reports \
+		--out docs/reports/curves_report.md; \
+	  echo "⚠️  Rapport courbure sans figures (pas de dossier out/plots/curves_*)"; \
+	fi
+
+curve-stats-by-class: match-curves
+	@mkdir -p out/stats
+	. .venv/bin/activate && $(PY) scripts/curve_metrics.py \
+		--matched out/curves/matched.parquet \
+		--out-csv out/stats/curve_kpis.csv \
+		--by-class-csv out/stats/curve_kpis_by_class.csv
+	@echo "✅ KPIs courbure (global + par classe) → out/stats/curve_kpis.csv et out/stats/curve_kpis_by_class.csv"
+
+curve-stats-rows: match-curves
+	@mkdir -p out/stats
+	. .venv/bin/activate && $(PY) scripts/curve_metrics.py \
+		--matched out/curves/matched.parquet \
+		--out-csv out/stats/curve_kpis.csv \
+		--by-class-csv out/stats/curve_kpis_by_class.csv \
+		--save-rows out/stats/curve_kpis_rows.parquet
+	@echo "✅ KPIs (global + par classe) + lignes → out/stats/curve_kpis_rows.parquet"
+
+curves-all: curve-profiles curve-stats-by-class report-curves-docs
+	@echo "✅ Courbes: profils + KPIs (global & par classe) + rapport doc"
+
 # 3) Tout en une passe
 all: stats dists
 	@echo "✅ Stats + Distributions générées."
