@@ -11,4 +11,4 @@ Découvrez tout ce qu'il faut savoir pour maîtriser l'analyse de la **courbure*
 - 📂 les jeux de données et la **reproductibilité**,
 - 💼 une présentation produit (Elevator Speech + Business Model Canvas).
 
-👉 Pour commencer : lisez [Paper](paper.md) pour l’aperçu scientifique, ou [Produit](product.md) pour le cadrage marché.
+👉 Pour commencer : consultez la page **Produit** ([product.md](product.md)) pour le cadrage marché. Le *paper* sera publié ultérieurement.
