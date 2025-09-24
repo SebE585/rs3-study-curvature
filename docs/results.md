@@ -52,22 +52,22 @@ Les fichiers de quantiles générés (*nearest_quants_d20.csv*, *nearest_quants_
 
 # Fichiers produits (exemples) 📁
 
-- [x] Résumés (sans contrainte) : *nearest_diffs_d20.csv*, *nearest_diffs_d30.csv*, *nearest_diffs_d50.csv*  
-- [x] Quantiles : *nearest_quants_d{20,30,50}.csv*  
-- [x] Contraintes de classe (d=30 m) : *compare__nearest_diffs.csv*, *compare__nearest_quantiles.csv*, *compare__nearest_matches.csv*, *compare__nearest_byclass.csv*, *compare__nearest_links.gpkg*  
-- [x] Diagnostics classes : *compare__class_stats.csv*  
+- [x] Résumés (sans contrainte) : *nearest_diffs_d20.csv*, *nearest_diffs_d30.csv*, *nearest_diffs_d50.csv*
+- [x] Quantiles : *nearest_quants_d{20,30,50}.csv*
+- [x] Contraintes de classe (d=30 m) : *compare__nearest_diffs.csv*, *compare__nearest_quantiles.csv*, *compare__nearest_matches.csv*, *compare__nearest_byclass.csv*, *compare__nearest_links.gpkg*
+- [x] Diagnostics classes : *compare__class_stats.csv*
 
 ---
 
 # Bandes de quantiles selon la distance de rapprochement 📉
 
-![Différence de longueur en fonction de la distance d](assets/img/quantiles/quantiles_diff_length_m.png)  
+![Différence de longueur en fonction de la distance d](assets/img/quantiles/quantiles_diff_length_m.png)
 *Figure 1 : Différence de longueur*
 
-![Différence du rayon minimal en fonction de la distance d](assets/img/quantiles/quantiles_diff_radius_min_m.png)  
+![Différence du rayon minimal en fonction de la distance d](assets/img/quantiles/quantiles_diff_radius_min_m.png)
 *Figure 2 : Différence du rayon minimal*
 
-![Différence de la courbure moyenne en fonction de la distance d](assets/img/quantiles/quantiles_diff_curv_mean_1perm.png)  
+![Différence de la courbure moyenne en fonction de la distance d](assets/img/quantiles/quantiles_diff_curv_mean_1perm.png)
 *Figure 3 : Différence de la courbure moyenne*
 
 ---
@@ -78,14 +78,14 @@ Les résultats renforcent la valeur du simulateur **RoadSimulator3**, illustrant
 
 ### Applications directes
 
-- Validation et alignement de bases cartographiques hétérogènes (OSM, BD TOPO, autres)  
-- Génération de jeux de données synthétiques pour entraîner des algorithmes de navigation  
-- Benchmark indépendant pour assureurs, collectivités et start-ups mobilité  
-- Support scientifique pour publications et communications  
+- Validation et alignement de bases cartographiques hétérogènes (OSM, BD TOPO, autres)
+- Génération de jeux de données synthétiques pour entraîner des algorithmes de navigation
+- Benchmark indépendant pour assureurs, collectivités et start-ups mobilité
+- Support scientifique pour publications et communications
 
 ### Documents associés
 
-- *Elevator Speech - RoadSimulator3.pdf* : simulateur inertiel réaliste, fusion GPS/IMU, génération de trajectoires synthétiques à 10 Hz  
+- *Elevator Speech - RoadSimulator3.pdf* : simulateur inertiel réaliste, fusion GPS/IMU, génération de trajectoires synthétiques à 10 Hz
 - *Business Model Canvas* : création de valeur pour assureurs, constructeurs et smart cities
 
 ---
@@ -105,7 +105,7 @@ Les tests statistiques (Welch t-test, Kolmogorov–Smirnov, Mann–Whitney) ont 
 # Distributions globales 📈
 
 ![Distribution globale des longueurs](assets/reports/global_20250922_095722/length_m__hist_kde.png)
-*Figure 4 : Distribution des longueurs (OSM vs BD TOPO).*  
+*Figure 4 : Distribution des longueurs (OSM vs BD TOPO).*
 
 ![Boxplot global des longueurs](assets/reports/global_20250922_095722/length_m__box.png)
 *Figure 5 : Boxplot des longueurs.*

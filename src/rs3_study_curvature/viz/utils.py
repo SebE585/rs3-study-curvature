@@ -6,10 +6,12 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
 def _setup_figure(width: float, height: float, dpi: int):
     fig = plt.figure(figsize=(width, height), dpi=dpi)
     ax = fig.add_subplot(111)
     return fig, ax
+
 
 def plot_hist_kde(
     df_a: pd.DataFrame,
@@ -39,10 +41,11 @@ def plot_hist_kde(
     if kde:
         try:
             from scipy.stats import gaussian_kde
+
             grid = np.linspace(
                 np.nanmin([a.min() if len(a) else np.nan, b.min() if len(b) else np.nan]),
                 np.nanmax([a.max() if len(a) else np.nan, b.max() if len(b) else np.nan]),
-                400
+                400,
             )
             if len(a) > 1:
                 ax.plot(grid, gaussian_kde(a)(grid), linewidth=1.5, label=f"KDE {label_a}")
@@ -55,6 +58,7 @@ def plot_hist_kde(
     if out_path:
         fig.savefig(out_path)
     plt.close(fig)
+
 
 def plot_box_violin(
     df_a: pd.DataFrame,
@@ -84,7 +88,7 @@ def plot_box_violin(
 
     # Violin
     fig_v, ax_v = _setup_figure(width, height, dpi)
-    parts = ax_v.violinplot([a, b], showmeans=True, showextrema=True, showmedians=True)
+    # parts = ax_v.violinplot([a, b], showmeans=True, showextrema=True, showmedians=True)
     ax_v.set_xticks([1, 2], [label_a, label_b])
     ax_v.set_title(f"Violin — {col}")
     ax_v.set_ylabel(xlabel or col)

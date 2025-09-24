@@ -6,8 +6,8 @@ On cherche à évaluer la **cohérence géométrique** des courbes routières en
 a_{lat} = \frac{v^2}{r}, \qquad \omega_z = \frac{v}{r}.
 \]
 
-**Hypothèse** : la segmentation et la généralisation de chaque base induisent  
-(i) des écarts systématiques de **longueur par segment** et  
+**Hypothèse** : la segmentation et la généralisation de chaque base induisent
+(i) des écarts systématiques de **longueur par segment** et
 (ii) des écarts de **courbure** (OSM tendant à être plus « lissé »).
 
 # 2. Méthodes (condensé) 🛠️
@@ -18,29 +18,29 @@ a_{lat} = \frac{v^2}{r}, \qquad \omega_z = \frac{v}{r}.
 
 # 3. Résultats principaux 📊
 
-- **Couverture** :  
-  - 206 000 appariements pour \( d = 20 \) m,  
-  - 291 000 appariements pour \( d = 30 \) m,  
+- **Couverture** :
+  - 206 000 appariements pour \( d = 20 \) m,
+  - 291 000 appariements pour \( d = 30 \) m,
   - 418 000 appariements pour \( d = 50 \) m.
 
-- **Biais de longueur** :  
-  - \( \Delta \text{length\_m} \) moyen environ −63 m (pour \( d=20 \) m),  
-  - −76 m (pour \( d=30 \) m),  
+- **Biais de longueur** :
+  - \( \Delta \text{length\_m} \) moyen environ −63 m (pour \( d=20 \) m),
+  - −76 m (pour \( d=30 \) m),
   - −94 m (pour \( d=50 \) m).
 
-- **Courbure moyenne** :  
+- **Courbure moyenne** :
   - \( \Delta \text{curv\_mean\_1perm} \) environ −0,012 à −0,013 (OSM plus « souple »).
 
-- **Contrainte de classe** (pour \( d=30 \) m, environ 9 300 appariements) :  
-  - \( \Delta \text{length\_m} = -106{,}7 \) m,  
-  - \( \Delta \text{curv\_mean\_1perm} = -0{,}0066 \),  
+- **Contrainte de classe** (pour \( d=30 \) m, environ 9 300 appariements) :
+  - \( \Delta \text{length\_m} = -106{,}7 \) m,
+  - \( \Delta \text{curv\_mean\_1perm} = -0{,}0066 \),
   - l’hétérogénéité fonctionnelle expliquait une partie de l’écart de courbure.
 
 # 4. Interprétation & implications RS3 🔍
 
 - **OSM** sur-segmente le réseau (tronçons plus courts), ce qui réduit la courbure moyenne calculée par tronçon (souvent plus rectiligne localement).
 - **BD TOPO** modélise des géométries plus continues — rayons minimaux plus « fins », expliquant \( \Delta \text{curv\_mean} < 0 \).
-- Pour RS3, la vitesse sûre en courbe  
+- Pour RS3, la vitesse sûre en courbe
   \[
   v_{\max} = \sqrt{a_{\text{lat,max}} \times r}
   \]

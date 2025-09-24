@@ -8,6 +8,7 @@ Additions vs previous version:
 - Optional --drop-inf to ignore +/-inf in radius before computing diffs
 - Clear diagnostics and safe fallbacks
 """
+
 from __future__ import annotations
 
 import argparse
@@ -25,6 +26,7 @@ from unicodedata import normalize as u_normalize
 # -----------------------------------------------------------------------------
 # Helpers
 # -----------------------------------------------------------------------------
+
 
 def _strip_accents(s: str) -> str:
     return "".join(c for c in u_normalize("NFKD", s) if ord(c) < 128)
@@ -47,11 +49,12 @@ def _load_mapping(path: Path | None) -> dict[str, str]:
     try:
         if path.suffix.lower() in {".yml", ".yaml"}:
             import yaml  # lazy
+
             data = yaml.safe_load(Path(path).read_text()) or {}
         else:
             data = json.loads(Path(path).read_text())
         # normalize keys/values
-        return { _norm_class(k): _norm_class(v) for k, v in data.items() if k is not None }
+        return {_norm_class(k): _norm_class(v) for k, v in data.items() if k is not None}
     except Exception as e:  # pragma: no cover (logging only)
         warnings.warn(f"[WARN] Échec lecture mapping {path}: {e} — mapping ignoré.")
         return {}
@@ -119,40 +122,104 @@ def _describe(df: pd.DataFrame) -> pd.DataFrame:
 # CLI
 # -----------------------------------------------------------------------------
 
+
 def main(argv=None):
     p = argparse.ArgumentParser(description="Nearest-neighbor comparison between OSM and BD TOPO segments")
     p.add_argument("--in-dir", type=Path, default=Path("."))
     p.add_argument("--osm-name", type=str, default="roadinfo_segments_osm.parquet")
     p.add_argument("--bd-name", type=str, default="roadinfo_segments_bdtopo.parquet")
 
-    p.add_argument("--max-dist", type=float, default=30.0, help="Distance max (m) pour sjoin_nearest")
-    p.add_argument("--match-class", action="store_true", help="Contraindre l'appariement à la même classe normalisée")
+    p.add_argument(
+        "--max-dist",
+        type=float,
+        default=30.0,
+        help="Distance max (m) pour sjoin_nearest",
+    )
+    p.add_argument(
+        "--match-class",
+        action="store_true",
+        help="Contraindre l'appariement à la même classe normalisée",
+    )
     p.add_argument("--class-col-osm", type=str, default="class")
     p.add_argument("--class-col-bd", type=str, default="class")
-    p.add_argument("--class-map", type=Path, default=None, help="YAML/JSON mapping BD→OSM (prioritaire)")
+    p.add_argument(
+        "--class-map",
+        type=Path,
+        default=None,
+        help="YAML/JSON mapping BD→OSM (prioritaire)",
+    )
 
-    p.add_argument("--drop-inf", action="store_true", help="Ignore les ±inf de radius_min avant calcul des écarts")
+    p.add_argument(
+        "--drop-inf",
+        action="store_true",
+        help="Ignore les ±inf de radius_min avant calcul des écarts",
+    )
 
-    p.add_argument("--out-summary", type=Path, default=None, help="Chemin CSV de synthèse (describe)")
-    p.add_argument("--out-matches", type=Path, default=None, help="Chemin CSV des appariements détaillés")
-    p.add_argument("--out-byclass", type=Path, default=None, help="Chemin CSV des stats par classe (si --per-class)")
-    p.add_argument("--export-geo", type=Path, default=None, help="Export Geo* des appariements sous forme de segments (LineString)")
-    p.add_argument("--per-class", action="store_true", help="Écrit un CSV par classe normalisée (_byclass)")
-    p.add_argument("--diag-classes", action="store_true", help="Affiche des stats de classes (brut/normalisé) et impression console")
-    p.add_argument("--out-class-stats", type=Path, default=None, help="Chemin CSV des stats de classes (optionnel)")
+    p.add_argument(
+        "--out-summary",
+        type=Path,
+        default=None,
+        help="Chemin CSV de synthèse (describe)",
+    )
+    p.add_argument(
+        "--out-matches",
+        type=Path,
+        default=None,
+        help="Chemin CSV des appariements détaillés",
+    )
+    p.add_argument(
+        "--out-byclass",
+        type=Path,
+        default=None,
+        help="Chemin CSV des stats par classe (si --per-class)",
+    )
+    p.add_argument(
+        "--export-geo",
+        type=Path,
+        default=None,
+        help="Export Geo* des appariements sous forme de segments (LineString)",
+    )
+    p.add_argument(
+        "--per-class",
+        action="store_true",
+        help="Écrit un CSV par classe normalisée (_byclass)",
+    )
+    p.add_argument(
+        "--diag-classes",
+        action="store_true",
+        help="Affiche des stats de classes (brut/normalisé) et impression console",
+    )
+    p.add_argument(
+        "--out-class-stats",
+        type=Path,
+        default=None,
+        help="Chemin CSV des stats de classes (optionnel)",
+    )
 
-    p.add_argument("--metrics", type=str, default="length_m,radius_min_m,curv_mean_1perm",
-                   help="Liste de métriques à comparer (séparées par des virgules)")
-    p.add_argument("--out-quantiles", type=Path, default=None,
-                   help="Chemin CSV des quantiles (si non fourni, écrit à côté de --out-summary avec suffixe __quantiles)")
+    p.add_argument(
+        "--metrics",
+        type=str,
+        default="length_m,radius_min_m,curv_mean_1perm",
+        help="Liste de métriques à comparer (séparées par des virgules)",
+    )
+    p.add_argument(
+        "--out-quantiles",
+        type=Path,
+        default=None,
+        help="Chemin CSV des quantiles (si non fourni, écrit à côté de --out-summary avec suffixe __quantiles)",
+    )
     p.add_argument(
         "--quantiles",
         type=str,
         default="0.10,0.25,0.50,0.75,0.90",
         help="Liste de quantiles (0-1) séparés par des virgules, ex: '0.10,0.50,0.90'. Par défaut: 0.10,0.25,0.50,0.75,0.90",
     )
-    p.add_argument("--keep-cols", type=str, default="",
-                   help="Colonnes supplémentaires à conserver dans --out-matches (séparées par des virgules)")
+    p.add_argument(
+        "--keep-cols",
+        type=str,
+        default="",
+        help="Colonnes supplémentaires à conserver dans --out-matches (séparées par des virgules)",
+    )
     args = p.parse_args(argv)
 
     # Parse metrics list and extra columns
@@ -172,7 +239,10 @@ def main(argv=None):
         osm_cls_col = args.class_col_osm if args.class_col_osm in g_osm.columns else None
         bd_cls_col = args.class_col_bd if args.class_col_bd in g_bd.columns else None
         if osm_cls_col is None or bd_cls_col is None:
-            print("[WARN] match_class demandé mais colonnes de classe manquantes — aucune contrainte appliquée.", file=sys.stderr)
+            print(
+                "[WARN] match_class demandé mais colonnes de classe manquantes — aucune contrainte appliquée.",
+                file=sys.stderr,
+            )
             args.match_class = False
         else:
             g_osm["_class_norm"] = g_osm[osm_cls_col].map(_norm_class)
@@ -191,7 +261,12 @@ def main(argv=None):
         if user_mp:
             mp_all.update(user_mp)
 
-        def _mk_counts(gdf: gpd.GeoDataFrame, raw_col: str | None, mapping: dict[str, str], label: str) -> pd.DataFrame:
+        def _mk_counts(
+            gdf: gpd.GeoDataFrame,
+            raw_col: str | None,
+            mapping: dict[str, str],
+            label: str,
+        ) -> pd.DataFrame:
             if raw_col is None or raw_col not in gdf.columns:
                 return pd.DataFrame(columns=["source", "class", "count_raw", "count_norm"])  # empty
             sr_raw = gdf[raw_col].map(_norm_class)
@@ -204,23 +279,23 @@ def main(argv=None):
 
         # Colonnes de classe choisies (même si match_class est False)
         osm_cls_raw = args.class_col_osm if args.class_col_osm in g_osm.columns else None
-        bd_cls_raw  = args.class_col_bd  if args.class_col_bd  in g_bd.columns  else None
+        bd_cls_raw = args.class_col_bd if args.class_col_bd in g_bd.columns else None
 
         cs_osm = _mk_counts(g_osm, osm_cls_raw, {}, "osm")
-        cs_bd  = _mk_counts(g_bd,  bd_cls_raw,  mp_all, "bdtopo")
+        cs_bd = _mk_counts(g_bd, bd_cls_raw, mp_all, "bdtopo")
         class_stats = pd.concat([cs_osm, cs_bd], ignore_index=True, sort=False)
 
         if not class_stats.empty:
             print("[INFO] Top classes (normalisées) OSM:")
             try:
-                print(class_stats[class_stats["source"]=="osm"].sort_values("count_norm", ascending=False).head(15))
+                print(class_stats[class_stats["source"] == "osm"].sort_values("count_norm", ascending=False).head(15))
             except Exception:
-                print(class_stats[class_stats["source"]=="osm"].head(15))
+                print(class_stats[class_stats["source"] == "osm"].head(15))
             print("[INFO] Top classes (normalisées) BD TOPO (après mapping):")
             try:
-                print(class_stats[class_stats["source"]=="bdtopo"].sort_values("count_norm", ascending=False).head(15))
+                print(class_stats[class_stats["source"] == "bdtopo"].sort_values("count_norm", ascending=False).head(15))
             except Exception:
-                print(class_stats[class_stats["source"]=="bdtopo"].head(15))
+                print(class_stats[class_stats["source"] == "bdtopo"].head(15))
 
             if args.out_class_stats:
                 class_stats.to_csv(args.out_class_stats, index=False)
@@ -326,8 +401,14 @@ def main(argv=None):
     # Optional matches export
     if args.out_matches:
         keep = [
-            c for c in [
-                "road_id_left", "road_id_right", "class_left", "class_right", "name_left", "name_right",
+            c
+            for c in [
+                "road_id_left",
+                "road_id_right",
+                "class_left",
+                "class_right",
+                "name_left",
+                "name_right",
                 "_dist_m",
             ]
             if c in joined.columns
@@ -340,8 +421,10 @@ def main(argv=None):
         # also keep original metric columns if available
         for m in metrics:
             lcol, rcol = _resolve_col(joined, m)
-            if lcol: keep.append(lcol)
-            if rcol: keep.append(rcol)
+            if lcol:
+                keep.append(lcol)
+            if rcol:
+                keep.append(rcol)
         joined[keep].to_csv(args.out_matches, index=False)
         print(f"Écrit (appariements): {args.out_matches}")
 
@@ -351,11 +434,15 @@ def main(argv=None):
         if lcls and rcls:
             by = joined[[lcls, rcls] + out_cols].copy()
             by.rename(columns={lcls: "class_left", rcls: "class_right"}, inplace=True)
-            grp = by.groupby(["class_left", "class_right"]).agg(
-                count=(out_cols[0], "count"),
-                mean_curv=("diff_curv_mean_1perm", "mean"),
-                mean_len=("diff_length_m", "mean"),
-            ).reset_index()
+            grp = (
+                by.groupby(["class_left", "class_right"])
+                .agg(
+                    count=(out_cols[0], "count"),
+                    mean_curv=("diff_curv_mean_1perm", "mean"),
+                    mean_len=("diff_length_m", "mean"),
+                )
+                .reset_index()
+            )
             out_byclass = args.out_byclass or (in_dir / "compare__nearest_byclass.csv")
             grp.to_csv(out_byclass, index=False)
             print(f"Écrit (par classe): {out_byclass}")
@@ -370,8 +457,7 @@ def main(argv=None):
         if geom_right is None and {"x_centroid_right", "y_centroid_right"}.issubset(joined.columns):
             try:
                 geom_right = gpd.GeoSeries(
-                    [Point(x, y) if pd.notna(x) and pd.notna(y) else None
-                     for x, y in zip(joined["x_centroid_right"], joined["y_centroid_right"])],
+                    [Point(x, y) if pd.notna(x) and pd.notna(y) else None for x, y in zip(joined["x_centroid_right"], joined["y_centroid_right"])],
                     crs="EPSG:2154",
                 )
                 joined["geometry_right"] = geom_right
@@ -396,11 +482,22 @@ def main(argv=None):
                 crs="EPSG:2154",
             )
             # Keep a compact set of columns
-            keep = [c for c in [
-                "road_id_left", "road_id_right", "class_left", "class_right", "name_left", "name_right",
-                "_dist_m",
-                "diff_length_m", "diff_radius_min_m", "diff_curv_mean_1perm"
-            ] if c in gexp.columns]
+            keep = [
+                c
+                for c in [
+                    "road_id_left",
+                    "road_id_right",
+                    "class_left",
+                    "class_right",
+                    "name_left",
+                    "name_right",
+                    "_dist_m",
+                    "diff_length_m",
+                    "diff_radius_min_m",
+                    "diff_curv_mean_1perm",
+                ]
+                if c in gexp.columns
+            ]
             keep = keep + ["geometry"]
             gexp = gexp[keep]
             # Pick driver from extension

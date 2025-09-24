@@ -70,10 +70,18 @@ def main():
     ap.add_argument("--in-dir", type=Path, default=Path("ref/roadinfo"), help="Dossier des sorties")
     ap.add_argument("--osm-name", default="roadinfo_segments_osm.parquet")
     ap.add_argument("--bd-name", default="roadinfo_segments_bdtopo.parquet")
-    ap.add_argument("--q", type=float, default=0.99, help="Quantile de clipping pour les histogrammes")
+    ap.add_argument(
+        "--q",
+        type=float,
+        default=0.99,
+        help="Quantile de clipping pour les histogrammes",
+    )
     ap.add_argument("--drop-inf", action="store_true", help="Ignorer ±inf pour radius_min_m")
-    ap.add_argument("--out-summary", default="compare__summary_segments.csv",
-                    help="Nom du CSV résumé")
+    ap.add_argument(
+        "--out-summary",
+        default="compare__summary_segments.csv",
+        help="Nom du CSV résumé",
+    )
     args = ap.parse_args()
 
     in_dir = args.in_dir
@@ -82,10 +90,12 @@ def main():
     seg_osm = _read_parquet(in_dir / args.osm_name)
     seg_bd = _read_parquet(in_dir / args.bd_name)
 
-    summary = pd.DataFrame([
-        quick_summary(seg_osm, "osm", args.drop_inf),
-        quick_summary(seg_bd, "bdtopo", args.drop_inf),
-    ])
+    summary = pd.DataFrame(
+        [
+            quick_summary(seg_osm, "osm", args.drop_inf),
+            quick_summary(seg_bd, "bdtopo", args.drop_inf),
+        ]
+    )
     print(summary)
     summary.to_csv(out_summary, index=False)
     print("\nÉcrit:", out_summary)

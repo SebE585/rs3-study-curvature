@@ -1,5 +1,3 @@
-
-
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
@@ -17,7 +15,9 @@ def _ensure_dir(p: str):
         os.makedirs(p, exist_ok=True)
 
 
-def _auto_pick_latest(pattern_dir: str, prefix: str, ext: str | None = None) -> str | None:
+def _auto_pick_latest(
+    pattern_dir: str, prefix: str, ext: str | None = None
+) -> str | None:
     """Return the lexicographically latest path within a directory for a given prefix.
     If ext is provided, filter files by that extension. Returns None if nothing found.
     """
@@ -51,13 +51,31 @@ def _effect_size_bucket(d: float | None) -> str:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Génère un rapport Markdown avec résultats stats + figures")
+    parser = argparse.ArgumentParser(
+        description="Génère un rapport Markdown avec résultats stats + figures"
+    )
     parser.add_argument("--config", required=True, help="YAML de configuration")
-    parser.add_argument("--stats", required=False, help="CSV résultats stats globaux (auto si non fourni)")
-    parser.add_argument("--plots-dir", required=False, help="Répertoire des figures (auto si non fourni)")
-    parser.add_argument("--out", default="out/report.md", help="Fichier de sortie Markdown")
-    parser.add_argument("--title", default="Rapport comparatif OSM vs BD TOPO", help="Titre du rapport")
-    parser.add_argument("--docs-rel", default=None, help="Chemin relatif depuis le rapport vers les figures (par ex. '../out/plots/...)'")
+    parser.add_argument(
+        "--stats",
+        required=False,
+        help="CSV résultats stats globaux (auto si non fourni)",
+    )
+    parser.add_argument(
+        "--plots-dir",
+        required=False,
+        help="Répertoire des figures (auto si non fourni)",
+    )
+    parser.add_argument(
+        "--out", default="out/report.md", help="Fichier de sortie Markdown"
+    )
+    parser.add_argument(
+        "--title", default="Rapport comparatif OSM vs BD TOPO", help="Titre du rapport"
+    )
+    parser.add_argument(
+        "--docs-rel",
+        default=None,
+        help="Chemin relatif depuis le rapport vers les figures (par ex. '../out/plots/...)'",
+    )
     args = parser.parse_args()
 
     with open(args.config, "r") as f:
@@ -71,10 +89,14 @@ def main():
     plots_dir = args.plots_dir or _auto_pick_latest("out/plots", "global_")
 
     if not stats_csv or not os.path.exists(stats_csv):
-        raise FileNotFoundError("Impossible de localiser le CSV des résultats (utilise --stats).")
+        raise FileNotFoundError(
+            "Impossible de localiser le CSV des résultats (utilise --stats)."
+        )
 
     if not plots_dir or not os.path.isdir(plots_dir):
-        print("[WARN] Répertoire de figures introuvable — la section Distributions affichera seulement la table.")
+        print(
+            "[WARN] Répertoire de figures introuvable — la section Distributions affichera seulement la table."
+        )
         plots_dir = None
 
     df = pd.read_csv(stats_csv)
@@ -90,9 +112,13 @@ def main():
         d = r.get("cohens_d")
         ks = r.get("ks_stat")
         bucket = _effect_size_bucket(d)
-        arrow = "↑" if (pd.notna(dmean) and dmean > 0) else ("↓" if pd.notna(dmean) else "")
+        arrow = (
+            "↑" if (pd.notna(dmean) and dmean > 0) else ("↓" if pd.notna(dmean) else "")
+        )
         if (pd.notna(d) and abs(d) >= 0.5) or (pd.notna(ks) and ks >= 0.2):
-            highlights.append(f"**{metric}** : effet {bucket} (Cohen d={d:.2f}), KS={ks:.3f}, Δmoy={dmean:.3f} {arrow}")
+            highlights.append(
+                f"**{metric}** : effet {bucket} (Cohen d={d:.2f}), KS={ks:.3f}, Δmoy={dmean:.3f} {arrow}"
+            )
 
     # Build Markdown content
     lines: List[str] = []
@@ -117,8 +143,20 @@ def main():
     lines.append("")
     # Reorder/pretty-print table if columns present
     desired_cols = [
-        "metric","n_osm","n_bd","mean_osm","mean_bd","diff_mean",
-        "t_welch","p_t_welch","ks_stat","p_ks","mw_stat","p_mw","cohens_d","cliffs_delta"
+        "metric",
+        "n_osm",
+        "n_bd",
+        "mean_osm",
+        "mean_bd",
+        "diff_mean",
+        "t_welch",
+        "p_t_welch",
+        "ks_stat",
+        "p_ks",
+        "mw_stat",
+        "p_mw",
+        "cohens_d",
+        "cliffs_delta",
     ]
     cols = [c for c in desired_cols if c in df.columns]
     df_print = df[cols] if cols else df
@@ -139,6 +177,7 @@ def main():
         # Compute relative path to plots from the report location if requested
         base_dir = plots_dir
         rel_root = os.path.dirname(out_path)
+
         def _rel(p: str) -> str:
             full = os.path.join(base_dir, p)
             if args.docs_rel:
@@ -148,8 +187,8 @@ def main():
 
         # Files
         p_hist = f"{m}__hist_kde.png"
-        p_box  = f"{m}__box.png"
-        p_vio  = f"{m}__violin.png"
+        p_box = f"{m}__box.png"
+        p_vio = f"{m}__violin.png"
 
         any_fig = False
         if os.path.exists(os.path.join(base_dir, p_hist)):

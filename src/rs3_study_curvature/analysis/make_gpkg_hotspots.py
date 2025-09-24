@@ -25,6 +25,7 @@ import pandas as pd
 try:
     import geopandas as gpd
     from shapely.geometry import Point
+
     HAS_GEO = True
 except Exception:
     HAS_GEO = False
@@ -44,6 +45,7 @@ def _ensure_pairs(osm: pd.DataFrame, bd: pd.DataFrame) -> pd.DataFrame:
     """Si import de nearest_match échoue, on implémente un petit fallback KDTree/BruteForce."""
     try:
         from scipy.spatial import cKDTree
+
         HAVE_TREE = True
     except Exception:
         HAVE_TREE = False
@@ -64,11 +66,11 @@ def _ensure_pairs(osm: pd.DataFrame, bd: pd.DataFrame) -> pd.DataFrame:
         dist = np.empty(len(Xo), dtype=float)
         B = 5000
         for i in range(0, len(Xo), B):
-            S = Xo[i:i+B]
+            S = Xo[i : i + B]
             d2 = ((S[:, None, :] - Xb[None, :, :]) ** 2).sum(axis=2)
             j = d2.argmin(axis=1)
-            idx[i:i+B] = j
-            dist[i:i+B] = np.sqrt(d2[np.arange(len(j)), j])
+            idx[i : i + B] = j
+            dist[i : i + B] = np.sqrt(d2[np.arange(len(j)), j])
 
     m = osm.copy()
     m["_bd_idx"] = idx
@@ -103,12 +105,19 @@ def main():
     ap.add_argument("--in-dir", type=Path, default=Path("ref/roadinfo"))
     ap.add_argument("--osm-name", default="roadinfo_segments_osm.parquet")
     ap.add_argument("--bd-name", default="roadinfo_segments_bdtopo.parquet")
-    ap.add_argument("--metric", default="diff_curv_mean_1perm",
-                    choices=["diff_curv_mean_1perm", "diff_radius_min_m", "diff_length_m"],
-                    help="Métrique de tri (OSM - BD)")
+    ap.add_argument(
+        "--metric",
+        default="diff_curv_mean_1perm",
+        choices=["diff_curv_mean_1perm", "diff_radius_min_m", "diff_length_m"],
+        help="Métrique de tri (OSM - BD)",
+    )
     ap.add_argument("--top-n", type=int, default=5000, help="Nombre de hotspots")
     ap.add_argument("--out", type=Path, default=Path("compare__hotspots.gpkg"))
-    ap.add_argument("--abs", action="store_true", help="Trier par valeur absolue du diff (par défaut True pour curv)")
+    ap.add_argument(
+        "--abs",
+        action="store_true",
+        help="Trier par valeur absolue du diff (par défaut True pour curv)",
+    )
     args = ap.parse_args()
 
     in_dir = args.in_dir
@@ -117,7 +126,14 @@ def main():
 
     # Appariement
     if nearest_match is not None:
-        pairs = nearest_match(osm, bd, max_dist=None, match_class=False, class_col_osm=None, class_col_bd=None)
+        pairs = nearest_match(
+            osm,
+            bd,
+            max_dist=None,
+            match_class=False,
+            class_col_osm=None,
+            class_col_bd=None,
+        )
     else:
         pairs = _ensure_pairs(osm, bd)
 

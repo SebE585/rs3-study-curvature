@@ -57,21 +57,18 @@ plugins:
 
 nav:
   - Accueil: index.md
-  - Étude courbure:
-      - Rapport courbes (virages): reports/curves_report.md
-      - Rapport global: reports/curvature_report.md
-      - Rapport par classe: reports/curvature_by_class.md
-      - Bias sweep: reports/bias_sweep.md
-      - Article (brouillon): article_draft.md
-      - Méthodes: method.md
-      - Résultats: results.md
-      - Discussion: discussion.md
-      - Hotspots: hotspots.md
-  - Comparaisons:
-      - Vue rapide: compare_quick.md
-      - Appariement local: compare_nearest.md
-  - Produit: product.md
-  - Jeux de données: datasets.md
+  - État de l’art:
+    - Introduction: etat-de-l-art/intro.md
+    - Modèles géométriques: etat-de-l-art/modeles-geometriques.md
+    - Méthodes géospatiales: etat-de-l-art/methodes-geospatiales.md
+    - Vision par ordinateur: etat-de-l-art/methodes-vision.md
+    - Capteurs véhicule: etat-de-l-art/methodes-capteurs.md
+    - Applications: etat-de-l-art/applications.md
+  - Méthodes:
+    - Pipeline κ/r: methods/curvature.md
+    - Profils & classes: methods/profils-classes.md
+  - Résultats:
+    - OSM vs BD TOPO: results/osm-vs-ign.md
+    - Distributions par classe: results/distributions-classes.md
+  - Discussion: discussion.md
   - Reproductibilité: reproducibility.md
-  - Paper (aperçu): paper.md
-  - Annexes: annexes.md

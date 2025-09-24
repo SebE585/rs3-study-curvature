@@ -35,3 +35,15 @@ docs = [
 minversion = "7.0"
 addopts = "-q"
 testpaths = ["tests"]
+
+[project.scripts]
+rs3c = "rs3_study_curvature.cli.main:app"
+
+# pyproject.toml
+[tool.ruff]
+line-length = 150
+extend-exclude = ["out", "data", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = []

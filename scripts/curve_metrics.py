@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
-import argparse, os
+import argparse
+import os
 import numpy as np
 import pandas as pd
 
@@ -15,8 +16,12 @@ def alat(v_kmh: float, r_m: pd.Series | np.ndarray) -> np.ndarray:
     Accepte Series ou ndarray et renvoie un ndarray, NaN si rayon manquant/infini/0.
     """
     v = v_kmh / 3.6
-    r = pd.to_numeric(r_m, errors="coerce").to_numpy() if isinstance(r_m, pd.Series) else np.asarray(r_m, dtype=float)
-    with np.errstate(divide='ignore', invalid='ignore'):
+    r = (
+        pd.to_numeric(r_m, errors="coerce").to_numpy()
+        if isinstance(r_m, pd.Series)
+        else np.asarray(r_m, dtype=float)
+    )
+    with np.errstate(divide="ignore", invalid="ignore"):
         a = (v * v) / r
     a[~np.isfinite(a)] = np.nan
     return a
@@ -26,7 +31,9 @@ def _numeric_agg(df: pd.DataFrame) -> pd.DataFrame:
     """Agrège uniquement les colonnes numériques avec stats utiles."""
     num = df.select_dtypes(include=[np.number])
     if num.empty:
-        return pd.DataFrame(columns=["count", "mean", "median", "std", "q25", "q75", "iqr"])
+        return pd.DataFrame(
+            columns=["count", "mean", "median", "std", "q25", "q75", "iqr"]
+        )
     agg = num.agg(["count", "mean", "median", "std"]).T
     q25 = num.quantile(0.25)
     q75 = num.quantile(0.75)
@@ -38,29 +45,47 @@ def _numeric_agg(df: pd.DataFrame) -> pd.DataFrame:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="KPIs sur les virages appariés")
-    ap.add_argument("--matched", required=True, help="Parquet des virages appariés (match_curves.py)")
-    ap.add_argument("--out-csv", default="out/stats/curve_kpis.csv", help="Chemin de sortie du CSV agrégé (global)")
-    ap.add_argument("--by-class-csv", default="out/stats/curve_kpis_by_class.csv", help="Chemin de sortie du CSV agrégé par classe")
-    ap.add_argument("--save-rows", default=None, help="Chemin (parquet/csv) pour sauvegarder les KPIs ligne-à-ligne (optionnel)")
+    ap.add_argument(
+        "--matched",
+        required=True,
+        help="Parquet des virages appariés (match_curves.py)",
+    )
+    ap.add_argument(
+        "--out-csv",
+        default="out/stats/curve_kpis.csv",
+        help="Chemin de sortie du CSV agrégé (global)",
+    )
+    ap.add_argument(
+        "--by-class-csv",
+        default="out/stats/curve_kpis_by_class.csv",
+        help="Chemin de sortie du CSV agrégé par classe",
+    )
+    ap.add_argument(
+        "--save-rows",
+        default=None,
+        help="Chemin (parquet/csv) pour sauvegarder les KPIs ligne-à-ligne (optionnel)",
+    )
     args = ap.parse_args()
 
     df = pd.read_parquet(args.matched)
 
     # Colonnes attendues
     r_osm = pd.to_numeric(df.get("osm_r_min"), errors="coerce")
-    r_bd  = pd.to_numeric(df.get("bd_r_min"),  errors="coerce")
+    r_bd = pd.to_numeric(df.get("bd_r_min"), errors="coerce")
     k_osm = pd.to_numeric(df.get("osm_kappa_max"), errors="coerce")
-    k_bd  = pd.to_numeric(df.get("bd_kappa_max"),  errors="coerce")
+    k_bd = pd.to_numeric(df.get("bd_kappa_max"), errors="coerce")
 
     # KPIs élémentaires (ligne à ligne)
-    kpis = pd.DataFrame({
-        "diff_r_min": r_osm - r_bd,
-        "diff_kappa_max": k_osm - k_bd,
-        "alat50_diff": alat(50, r_osm) - alat(50, r_bd),
-        "alat80_diff": alat(80, r_osm) - alat(80, r_bd),
-        "alat110_diff": alat(110, r_osm) - alat(110, r_bd),
-        "class": df.get("osm_class", df.get("bd_class"))
-    })
+    kpis = pd.DataFrame(
+        {
+            "diff_r_min": r_osm - r_bd,
+            "diff_kappa_max": k_osm - k_bd,
+            "alat50_diff": alat(50, r_osm) - alat(50, r_bd),
+            "alat80_diff": alat(80, r_osm) - alat(80, r_bd),
+            "alat110_diff": alat(110, r_osm) - alat(110, r_bd),
+            "class": df.get("osm_class", df.get("bd_class")),
+        }
+    )
 
     # Sauvegarde optionnelle des lignes
     if args.save_rows:

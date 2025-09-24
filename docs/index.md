@@ -1,6 +1,6 @@
 # RS3 — Étude de la courbure routière
 
-Bienvenue sur la documentation du projet **RS3 Study Curvature**.  
+Bienvenue sur la documentation du projet **RS3 Study Curvature**.
 Ce site présente : 🚀
 
 Découvrez tout ce qu'il faut savoir pour maîtriser l'analyse de la **courbure** et de la **pente** sur les réseaux routiers :

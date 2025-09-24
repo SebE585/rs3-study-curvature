@@ -14,7 +14,7 @@ Cette analyse compare les données de OpenStreetMap (OSM) avec celles de BD TOPO
 - **BD TOPO** → courbure moyenne légèrement plus forte
 - Rayons de courbure très différents (écarts énormes liés à la modélisation)
 
-📂 Résultats CSV :  
+📂 Résultats CSV :
 ```
 compare__nearest_diffs.csv
 ```

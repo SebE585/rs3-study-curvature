@@ -1,0 +1,2 @@
+[console_scripts]
+rs3c = rs3_study_curvature.cli.main:app

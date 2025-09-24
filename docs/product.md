@@ -1,8 +1,8 @@
 # 🚗 Produit — RoadSimulator3
 
 ## Elevator Speech
-RoadSimulator3 est une solution avancée de simulation de trajets véhicules intégrant GPS, IMU et gyroscope pour générer des données réalistes à haute fréquence (10 Hz).  
-Unique sur le marché, elle fusionne navigation, inertie et profils de conduite pour créer des trajets synthétiques hyper-réalistes.  
+RoadSimulator3 est une solution avancée de simulation de trajets véhicules intégrant GPS, IMU et gyroscope pour générer des données réalistes à haute fréquence (10 Hz).
+Unique sur le marché, elle fusionne navigation, inertie et profils de conduite pour créer des trajets synthétiques hyper-réalistes.
 
 ---
 

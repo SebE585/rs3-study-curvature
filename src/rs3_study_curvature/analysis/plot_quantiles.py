@@ -34,6 +34,7 @@ Génère:
   - PNG par métrique: quantiles_<metric>.png avec médiane + bandes [q25,q75] et [q10,q90]
   - CSV long combiné: combined_quantiles_long.csv
 """
+
 from __future__ import annotations
 
 import argparse
@@ -41,7 +42,6 @@ import re
 from pathlib import Path
 from typing import Dict, List, Tuple
 
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from bisect import bisect_left
@@ -136,11 +136,7 @@ def tidy_from_csv(path: Path) -> pd.DataFrame:
         long = df0.melt(id_vars=["metric"], var_name="quantile", value_name="value")
         # nettoyer les labels de quantiles 'q10' -> '0.10'
         long["quantile"] = (
-            long["quantile"]
-            .astype(str)
-            .str.lower()
-            .str.replace("q", "", regex=False)
-            .apply(lambda s: f"{float(s)/100:.2f}" if s.isdigit() else s)
+            long["quantile"].astype(str).str.lower().str.replace("q", "", regex=False).apply(lambda s: f"{float(s) / 100:.2f}" if s.isdigit() else s)
         )
         long["quantile"] = long["quantile"].astype(float)
         return long[["metric", "quantile", "value"]]
@@ -155,7 +151,7 @@ def tidy_from_csv(path: Path) -> pd.DataFrame:
             .astype(str)
             .str.lower()
             .str.replace("q", "", regex=False)
-            .apply(lambda s: f"{float(s)/100:.2f}" if s.isdigit() else s)
+            .apply(lambda s: f"{float(s) / 100:.2f}" if s.isdigit() else s)
             .astype(float)
         )
         # succès -> transposer
@@ -168,10 +164,7 @@ def tidy_from_csv(path: Path) -> pd.DataFrame:
     except Exception:
         pass
 
-    raise ValueError(
-        f"Format CSV inconnu pour: {path}. "
-        "Attendu soit (metric,quantile,value), soit large avec metrics/quantiles."
-    )
+    raise ValueError(f"Format CSV inconnu pour: {path}. " "Attendu soit (metric,quantile,value), soit large avec metrics/quantiles.")
 
 
 def parse_qbands(s: str) -> Tuple[Tuple[float, float, float], Tuple[float, float]]:
@@ -293,8 +286,9 @@ def main():
             "inner_high": qu,
         }
         # Fallback: si un quantile demandé n'existe pas, prendre le plus proche disponible
-        chosen: Dict[str, float] = {k: (_closest(avail_qs, v) if round(v, 6) not in {round(a, 6) for a in avail_qs} else v)
-                                    for k, v in requested.items()}
+        chosen: Dict[str, float] = {
+            k: (_closest(avail_qs, v) if round(v, 6) not in {round(a, 6) for a in avail_qs} else v) for k, v in requested.items()
+        }
 
         # Alerter si un fallback a été appliqué
         for k, v in requested.items():
@@ -307,13 +301,13 @@ def main():
 
         parts = []
         # outer band
-        parts.append(pick(chosen["outer_low"],  f"q{chosen['outer_low']:.2f}"))
+        parts.append(pick(chosen["outer_low"], f"q{chosen['outer_low']:.2f}"))
         parts.append(pick(chosen["outer_high"], f"q{chosen['outer_high']:.2f}"))
         # inner band
-        parts.append(pick(chosen["inner_low"],  f"q{chosen['inner_low']:.2f}"))
+        parts.append(pick(chosen["inner_low"], f"q{chosen['inner_low']:.2f}"))
         parts.append(pick(chosen["inner_high"], f"q{chosen['inner_high']:.2f}"))
         # median
-        parts.append(pick(chosen["median"],     f"q{chosen['median']:.2f}"))
+        parts.append(pick(chosen["median"], f"q{chosen['median']:.2f}"))
 
         # Fusion progressive sur 'd'
         base = None
@@ -335,21 +329,39 @@ def main():
         ax = plt.gca()
 
         qcols = [c for c in base.columns if c != "d"]
-        inner_low_lbl  = _nearest_label(qcols, ql)    if qcols else f"q{ql:.2f}"
-        inner_high_lbl = _nearest_label(qcols, qu)    if qcols else f"q{qu:.2f}"
-        outer_low_lbl  = _nearest_label(qcols, qmin)  if qcols else f"q{qmin:.2f}"
-        outer_high_lbl = _nearest_label(qcols, qmax)  if qcols else f"q{qmax:.2f}"
-        median_lbl     = _nearest_label(qcols, qmed)  if qcols else f"q{qmed:.2f}"
+        inner_low_lbl = _nearest_label(qcols, ql) if qcols else f"q{ql:.2f}"
+        inner_high_lbl = _nearest_label(qcols, qu) if qcols else f"q{qu:.2f}"
+        outer_low_lbl = _nearest_label(qcols, qmin) if qcols else f"q{qmin:.2f}"
+        outer_high_lbl = _nearest_label(qcols, qmax) if qcols else f"q{qmax:.2f}"
+        median_lbl = _nearest_label(qcols, qmed) if qcols else f"q{qmed:.2f}"
 
         if inner_low_lbl in base and inner_high_lbl in base:
-            ax.fill_between(base["d"], base[inner_low_lbl], base[inner_high_lbl], alpha=0.25, label=f"[{inner_low_lbl[1:]}, {inner_high_lbl[1:]}]")
+            ax.fill_between(
+                base["d"],
+                base[inner_low_lbl],
+                base[inner_high_lbl],
+                alpha=0.25,
+                label=f"[{inner_low_lbl[1:]}, {inner_high_lbl[1:]}]",
+            )
 
         if outer_low_lbl in base and outer_high_lbl in base:
-            ax.fill_between(base["d"], base[outer_low_lbl], base[outer_high_lbl], alpha=0.15, label=f"[{outer_low_lbl[1:]}, {outer_high_lbl[1:]}]")
+            ax.fill_between(
+                base["d"],
+                base[outer_low_lbl],
+                base[outer_high_lbl],
+                alpha=0.15,
+                label=f"[{outer_low_lbl[1:]}, {outer_high_lbl[1:]}]",
+            )
 
         # médiane
         if median_lbl in base:
-            ax.plot(base["d"], base[median_lbl], marker="o", linewidth=2, label=f"médiane ({median_lbl[1:]})")
+            ax.plot(
+                base["d"],
+                base[median_lbl],
+                marker="o",
+                linewidth=2,
+                label=f"médiane ({median_lbl[1:]})",
+            )
 
         ax.set_xlabel("Distance max d'appariement (m)")
         ax.set_ylabel(metric)

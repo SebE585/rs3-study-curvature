@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
+
 @dataclass
 class TestResult:
     metric: str
@@ -28,6 +29,7 @@ class TestResult:
     cohens_d: float
     cliffs_delta: float
 
+
 def _cohens_d(x: np.ndarray, y: np.ndarray) -> float:
     # Welch-cohens d (pooled via deux variances avec tailles différentes)
     nx, ny = len(x), len(y)
@@ -36,6 +38,7 @@ def _cohens_d(x: np.ndarray, y: np.ndarray) -> float:
     if pooled <= 0 or np.isnan(pooled):
         return np.nan
     return (np.mean(x) - np.mean(y)) / np.sqrt(pooled)
+
 
 def _cliffs_delta(x: np.ndarray, y: np.ndarray) -> float:
     # Mesure non-paramétrique d'effet (entre -1 et 1)
@@ -58,6 +61,7 @@ def _cliffs_delta(x: np.ndarray, y: np.ndarray) -> float:
     denom = nx * ny
     return (more - less) / denom if denom else np.nan
 
+
 def run_all_tests(a: np.ndarray, b: np.ndarray) -> Tuple[float, float, float, float, float, float]:
     # Welch t-test (variances potentiellement inégales)
     t_welch, p_t = stats.ttest_ind(a, b, equal_var=False, nan_policy="omit")
@@ -66,6 +70,7 @@ def run_all_tests(a: np.ndarray, b: np.ndarray) -> Tuple[float, float, float, fl
     # Mann-Whitney (différence de rangs)
     mw_stat, p_mw = stats.mannwhitneyu(a, b, alternative="two-sided", method="asymptotic")
     return t_welch, p_t, ks_stat, p_ks, mw_stat, p_mw
+
 
 def summarize_metric(metric: str, a: np.ndarray, b: np.ndarray) -> TestResult:
     a = a[~np.isnan(a)]
@@ -90,12 +95,27 @@ def summarize_metric(metric: str, a: np.ndarray, b: np.ndarray) -> TestResult:
         cliffs_delta=float(_cliffs_delta(a, b)),
     )
 
+
 def results_to_df(results: List[TestResult]) -> pd.DataFrame:
     rows: List[Dict[str, Any]] = []
     for r in results:
         rows.append(r.__dict__)
     cols = [
-        "metric","n_osm","n_bd","mean_osm","mean_bd","std_osm","std_bd","diff_mean",
-        "t_welch","p_t_welch","ks_stat","p_ks","mw_stat","p_mw","cohens_d","cliffs_delta"
+        "metric",
+        "n_osm",
+        "n_bd",
+        "mean_osm",
+        "mean_bd",
+        "std_osm",
+        "std_bd",
+        "diff_mean",
+        "t_welch",
+        "p_t_welch",
+        "ks_stat",
+        "p_ks",
+        "mw_stat",
+        "p_mw",
+        "cohens_d",
+        "cliffs_delta",
     ]
     return pd.DataFrame(rows)[cols]

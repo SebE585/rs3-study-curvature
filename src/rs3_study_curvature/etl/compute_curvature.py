@@ -13,6 +13,7 @@ import yaml
 import logging
 from tqdm import tqdm
 from pyproj import Transformer
+
 try:
     from pyrosm import OSM
 except Exception:  # pragma: no cover
@@ -22,12 +23,14 @@ try:
 except Exception:  # pragma: no cover
     pyogrio = None
 
-logging.basicConfig(level=logging.INFO, format='[roadinfo] %(levelname)s %(message)s')
+logging.basicConfig(level=logging.INFO, format="[roadinfo] %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
+
 
 # --- Heartbeat helper for progress ---
 class Heartbeat:
     """Background heartbeat that logs a message every `interval` seconds while a long task runs."""
+
     def __init__(self, message: str, interval: float = 5.0):
         self.message = message
         self.interval = float(interval)
@@ -48,7 +51,13 @@ class Heartbeat:
         self._stop.set()
         self._thread.join(timeout=1.0)
 
-def _load_bdtopo(path: Path, layer: str | None, bbox_l93: tuple[float,float,float,float] | None, crs: str) -> gpd.GeoDataFrame:
+
+def _load_bdtopo(
+    path: Path,
+    layer: str | None,
+    bbox_l93: tuple[float, float, float, float] | None,
+    crs: str,
+) -> gpd.GeoDataFrame:
     read_kwargs = {}
     if layer:
         read_kwargs["layer"] = layer
@@ -62,6 +71,7 @@ def _load_bdtopo(path: Path, layer: str | None, bbox_l93: tuple[float,float,floa
             wkt = info.get("crs_wkt") or info.get("crs")
             if wkt:
                 from pyproj import CRS
+
                 data_crs_str = CRS.from_wkt(wkt).to_string()
         except Exception:
             data_crs_str = None
@@ -80,6 +90,7 @@ def _load_bdtopo(path: Path, layer: str | None, bbox_l93: tuple[float,float,floa
                     if cand:
                         try:
                             from pyproj import CRS
+
                             data_crs_str = CRS.from_user_input(cand).to_string()
                         except Exception:
                             data_crs_str = None
@@ -89,12 +100,14 @@ def _load_bdtopo(path: Path, layer: str | None, bbox_l93: tuple[float,float,floa
         if data_crs_str is None:
             try:
                 import fiona
+
                 with fiona.open(path, layer=layer) as src:
                     crs_wkt = getattr(src, "crs_wkt", None)
                     crs_dict = getattr(src, "crs", None)
                     cand = crs_wkt or crs_dict
                     if cand:
                         from pyproj import CRS
+
                         data_crs_str = CRS.from_user_input(cand).to_string()
             except Exception:
                 pass
@@ -159,7 +172,13 @@ def _load_bdtopo(path: Path, layer: str | None, bbox_l93: tuple[float,float,floa
 
     return gdf.to_crs(crs)
 
-def _load_osm(pbf_path: Path, bbox_wgs84: tuple[float,float,float,float] | None, crs: str, highways: list[str] | None) -> gpd.GeoDataFrame:
+
+def _load_osm(
+    pbf_path: Path,
+    bbox_wgs84: tuple[float, float, float, float] | None,
+    crs: str,
+    highways: list[str] | None,
+) -> gpd.GeoDataFrame:
     if OSM is None:
         raise RuntimeError("pyrosm n'est pas installé. `pip install pyrosm`.")
     if not pbf_path.exists():
@@ -168,7 +187,12 @@ def _load_osm(pbf_path: Path, bbox_wgs84: tuple[float,float,float,float] | None,
     if bbox_wgs84:
         # pyrosm requires a list (not a tuple) or a shapely geometry for bounding_box
         try:
-            bb = [float(bbox_wgs84[0]), float(bbox_wgs84[1]), float(bbox_wgs84[2]), float(bbox_wgs84[3])]
+            bb = [
+                float(bbox_wgs84[0]),
+                float(bbox_wgs84[1]),
+                float(bbox_wgs84[2]),
+                float(bbox_wgs84[3]),
+            ]
         except Exception:
             raise ValueError("bbox_wgs84 doit être une séquence [minlon, minlat, maxlon, maxlat].")
         osm = OSM(str(pbf_path), bounding_box=bb)
@@ -184,7 +208,7 @@ def _load_osm(pbf_path: Path, bbox_wgs84: tuple[float,float,float,float] | None,
     if highways:
         edges = edges[edges["highway"].isin(highways)]
     # Assurer LineString uniquement
-    edges = edges[edges.geometry.type.isin(["LineString","MultiLineString"])].explode(index_parts=False, ignore_index=True)
+    edges = edges[edges.geometry.type.isin(["LineString", "MultiLineString"])].explode(index_parts=False, ignore_index=True)
     edges = edges.rename(columns={"id": "road_id"})
     # Ensure we have a string identifier for each segment; if original OSM id is missing,
     # fall back to the GeoDataFrame index (as string). Using a Series here avoids the
@@ -197,6 +221,7 @@ def _load_osm(pbf_path: Path, bbox_wgs84: tuple[float,float,float,float] | None,
     log.info(f"OSM: après explode/filtrage géométrique → {len(edges):,} segments")
     return edges.to_crs(crs)
 
+
 def densify(line: LineString, step: float) -> LineString:
     L = line.length
     if L <= step:
@@ -205,13 +230,17 @@ def densify(line: LineString, step: float) -> LineString:
     pts = [line.interpolate(float(d)) for d in ds] + [line.interpolate(L)]
     return LineString(pts)
 
+
 def radius3(p1: np.ndarray, p2: np.ndarray, p3: np.ndarray) -> float:
-    a = np.linalg.norm(p2 - p1); b = np.linalg.norm(p3 - p2); c = np.linalg.norm(p3 - p1)
+    a = np.linalg.norm(p2 - p1)
+    b = np.linalg.norm(p3 - p2)
+    c = np.linalg.norm(p3 - p1)
     s = 0.5 * (a + b + c)
     A2 = max(s * (s - a) * (s - b) * (s - c), 0.0)
     if A2 <= 1e-16:
         return math.inf
     return (a * b * c) / (4.0 * math.sqrt(A2))
+
 
 def curvature_profile(line: LineString) -> pd.DataFrame:
     xy = np.asarray(line.coords, dtype=float)
@@ -221,12 +250,19 @@ def curvature_profile(line: LineString) -> pd.DataFrame:
     svals, radii = [], []
     s = 0.0
     for i in range(1, len(xy) - 1):
-        R = radius3(xy[i-1], xy[i], xy[i+1])
+        R = radius3(xy[i - 1], xy[i], xy[i + 1])
         radii.append(R)
-        svals.append(s + seglens[i-1])
-        s += seglens[i-1]
+        svals.append(s + seglens[i - 1])
+        s += seglens[i - 1]
     r = np.array(radii)
-    return pd.DataFrame({"s_m": svals, "radius_m": r, "curvature_1perm": np.where(np.isfinite(r), 1.0/r, 0.0)})
+    return pd.DataFrame(
+        {
+            "s_m": svals,
+            "radius_m": r,
+            "curvature_1perm": np.where(np.isfinite(r), 1.0 / r, 0.0),
+        }
+    )
+
 
 def slope_profile(line: LineString, dem_path: Path) -> pd.DataFrame:
     with rasterio.open(dem_path) as ds:
@@ -237,8 +273,9 @@ def slope_profile(line: LineString, dem_path: Path) -> pd.DataFrame:
     d = np.linalg.norm(np.diff(np.vstack([xs, ys]).T, axis=0), axis=1)
     dz = np.diff(zs)
     slope = np.where(d > 0, (dz / d) * 100.0, 0.0)
-    s_cum = np.cumsum(d) - d/2
+    s_cum = np.cumsum(d) - d / 2
     return pd.DataFrame({"s_m": s_cum, "slope_pct": slope})
+
 
 @dataclass
 class Cfg:
@@ -255,6 +292,7 @@ class Cfg:
     layer: str | None = None
     bbox_l93: tuple[float, float, float, float] | None = None  # (minx, miny, maxx, maxy) in EPSG:2154
     bbox_wgs84: tuple[float, float, float, float] | None = None  # (minlon, minlat, maxlon, maxlat)
+
 
 def build_from_config(cfg_path: Path) -> None:
     y = yaml.safe_load(Path(cfg_path).read_text())
@@ -279,7 +317,13 @@ def build_from_config(cfg_path: Path) -> None:
         cfg.out_dir.mkdir(parents=True, exist_ok=True)
         return cfg
 
-    def _run_once(y_local: dict, source: str, out_suffix: str = "", layer: str | None = None, highways: list[str] | None = None) -> None:
+    def _run_once(
+        y_local: dict,
+        source: str,
+        out_suffix: str = "",
+        layer: str | None = None,
+        highways: list[str] | None = None,
+    ) -> None:
         cfg = _mk_cfg(y_local, overrides={"layer": layer})
 
         # BBox effective en L93
@@ -305,7 +349,12 @@ def build_from_config(cfg_path: Path) -> None:
                 log.error("OSM demandé mais pyrosm n'est pas installé — run OSM ignoré.")
                 return
             highways = highways or ((y_local.get("processing", {}).get("osm", {}) or {}).get("highways"))
-            gdf = _load_osm(Path(y_local["inputs"].get("osm_pbf", "")), cfg.bbox_wgs84, cfg.crs, highways)
+            gdf = _load_osm(
+                Path(y_local["inputs"].get("osm_pbf", "")),
+                cfg.bbox_wgs84,
+                cfg.crs,
+                highways,
+            )
         else:
             gdf = _load_bdtopo(cfg.bdtopo_gpkg, cfg.layer, eff_bbox_l93, cfg.crs)
 
@@ -314,11 +363,21 @@ def build_from_config(cfg_path: Path) -> None:
         # --- Standardize attribute columns (class/name/maxspeed) for downstream tools ---
         class_candidates = [
             "highway",  # OSM
-            "class", "classe", "nature", "type", "CATEGORIE", "CATEGORIE_ROUTE",
+            "class",
+            "classe",
+            "nature",
+            "type",
+            "CATEGORIE",
+            "CATEGORIE_ROUTE",
         ]
         name_candidates = [
             "name",  # OSM
-            "nom", "NOM", "NOM_VOIE", "NOM_ITI", "LIBELLE", "LIBELLE_VOIE",
+            "nom",
+            "NOM",
+            "NOM_VOIE",
+            "NOM_ITI",
+            "LIBELLE",
+            "LIBELLE_VOIE",
         ]
         class_col = next((c for c in class_candidates if c in gdf.columns), None)
         name_col = next((c for c in name_candidates if c in gdf.columns), None)
@@ -358,7 +417,8 @@ def build_from_config(cfg_path: Path) -> None:
                 curv_mean = float((1.0 / rad).clip(upper=1.0 / cfg.clip_radius_min).mean())
                 is_straight = False
 
-            slope_mean = None; slope_p95 = None
+            slope_mean = None
+            slope_p95 = None
             if cfg.slope_enabled and cfg.dem_tif is not None:
                 sp = slope_profile(line, cfg.dem_tif)
                 slope_mean = float(sp["slope_pct"].mean())
@@ -366,23 +426,25 @@ def build_from_config(cfg_path: Path) -> None:
                 prof = prof.merge(sp, on="s_m", how="outer").sort_values("s_m")
 
             road_id = str(r.get("ID", _))
-            seg_rows.append({
-                "road_id": road_id,
-                "x_centroid": float(c.x),
-                "y_centroid": float(c.y),
-                "length_m": float(line.length),
-                "radius_min_m": r_min,
-                "radius_p85_m": r_p85,
-                "curv_mean_1perm": curv_mean,
-                "slope_mean_pct": slope_mean,
-                "slope_p95_pct": slope_p95,
-                "is_straight": is_straight,
-                "source": src,
-                # standardized attributes (if present)
-                "class": (str(r.get(class_col)) if class_col is not None and pd.notna(r.get(class_col)) else None),
-                "name": (str(r.get(name_col)) if name_col is not None and pd.notna(r.get(name_col)) else None),
-                "maxspeed": (str(r.get(maxspeed_col)) if maxspeed_col is not None and pd.notna(r.get(maxspeed_col)) else None),
-            })
+            seg_rows.append(
+                {
+                    "road_id": road_id,
+                    "x_centroid": float(c.x),
+                    "y_centroid": float(c.y),
+                    "length_m": float(line.length),
+                    "radius_min_m": r_min,
+                    "radius_p85_m": r_p85,
+                    "curv_mean_1perm": curv_mean,
+                    "slope_mean_pct": slope_mean,
+                    "slope_p95_pct": slope_p95,
+                    "is_straight": is_straight,
+                    "source": src,
+                    # standardized attributes (if present)
+                    "class": (str(r.get(class_col)) if class_col is not None and pd.notna(r.get(class_col)) else None),
+                    "name": (str(r.get(name_col)) if name_col is not None and pd.notna(r.get(name_col)) else None),
+                    "maxspeed": (str(r.get(maxspeed_col)) if maxspeed_col is not None and pd.notna(r.get(maxspeed_col)) else None),
+                }
+            )
             prof["road_id"] = road_id
             prof["source"] = src
             prof_rows.append(prof)
@@ -404,7 +466,8 @@ def build_from_config(cfg_path: Path) -> None:
         else:
             prof_path = Path(out["dir"]) / out.get("profile_parquet", "roadinfo_profile.parquet")
 
-        seg_path = seg_path.resolve(); prof_path = prof_path.resolve()
+        seg_path = seg_path.resolve()
+        prof_path = prof_path.resolve()
         Path(out["dir"]).mkdir(parents=True, exist_ok=True)
 
         # --- Write segments ---
@@ -431,7 +494,7 @@ def build_from_config(cfg_path: Path) -> None:
                 log.info(f"Écrit: {prof_path_csv} ({len(prof_df):,} échantillons)")
 
     # --- Orchestration: single-run vs multi-run ---
-    multi = (y.get("processing", {}).get("multi", {}) or {})
+    multi = y.get("processing", {}).get("multi", {}) or {}
     if multi.get("enabled") and multi.get("runs"):
         for run in multi["runs"]:
             name = run.get("name", "run")
@@ -444,4 +507,9 @@ def build_from_config(cfg_path: Path) -> None:
     else:
         # Backward compatible single run
         src = y["processing"].get("source", "bdtopo")
-        _run_once(y, source=src, out_suffix="", layer=y["processing"].get("layer") or y["inputs"].get("layer"))
+        _run_once(
+            y,
+            source=src,
+            out_suffix="",
+            layer=y["processing"].get("layer") or y["inputs"].get("layer"),
+        )

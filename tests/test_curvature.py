@@ -1,5 +1,7 @@
-import numpy as np, math
+import numpy as np
+import math
 from rs3_study_curvature.etl.compute_curvature import radius3
+
 
 def test_radius_circle():
     r = 100.0

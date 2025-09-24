@@ -55,59 +55,59 @@ MIT (code) — citez ce dépôt si vous réutilisez les scripts.
 
 ## 📊 Business Model Canvas
 
-**Partenaires clés**  
-- Instituts de recherche / universités  
-- Fournisseurs de données (IGN, OpenWeatherMap)  
-- Plateformes cloud et IA  
-- Éditeurs de logiciels télématiques  
+**Partenaires clés**
+- Instituts de recherche / universités
+- Fournisseurs de données (IGN, OpenWeatherMap)
+- Plateformes cloud et IA
+- Éditeurs de logiciels télématiques
 
-**Activités clés**  
-- Développement logiciel (simulateur, API, UI web)  
-- R&D sur la simulation inertielle  
-- Création de datasets synthétiques  
-- Maintenance Docker / API  
-- Support et consulting  
+**Activités clés**
+- Développement logiciel (simulateur, API, UI web)
+- R&D sur la simulation inertielle
+- Création de datasets synthétiques
+- Maintenance Docker / API
+- Support et consulting
 
-**Propositions de valeur**  
-- Simulateur inertiel réaliste unique  
-- API modulable pour intégration data science  
-- Simulation haute fréquence avec événements calibrés  
-- Outils de visualisation prêts à l'emploi  
-- Tests de robustesse pour algorithmes embarqués  
+**Propositions de valeur**
+- Simulateur inertiel réaliste unique
+- API modulable pour intégration data science
+- Simulation haute fréquence avec événements calibrés
+- Outils de visualisation prêts à l'emploi
+- Tests de robustesse pour algorithmes embarqués
 
-**Relations clients**  
-- Support technique personnalisé  
-- Documentation complète  
-- Accès Git privé / SaaS  
-- Formations et workshops  
+**Relations clients**
+- Support technique personnalisé
+- Documentation complète
+- Accès Git privé / SaaS
+- Formations et workshops
 
-**Canaux**  
-- Marketplace logiciels  
-- GitHub / GitLab  
-- Conférences et publications scientifiques  
-- Webinars, démonstrations  
+**Canaux**
+- Marketplace logiciels
+- GitHub / GitLab
+- Conférences et publications scientifiques
+- Webinars, démonstrations
 
-**Segments clients**  
-- Constructeurs automobiles  
-- Éditeurs de logiciels télématiques  
-- Équipes R&D en mobilité  
-- Sociétés d’assurance  
-- Acteurs smart city  
+**Segments clients**
+- Constructeurs automobiles
+- Éditeurs de logiciels télématiques
+- Équipes R&D en mobilité
+- Sociétés d’assurance
+- Acteurs smart city
 
-**Ressources clés**  
-- Expertise scientifique et algorithmique  
-- Infrastructure cloud  
-- Code source et pipelines Docker  
-- Base de données réalistes synthétiques  
+**Ressources clés**
+- Expertise scientifique et algorithmique
+- Infrastructure cloud
+- Code source et pipelines Docker
+- Base de données réalistes synthétiques
 
-**Structure de coûts**  
-- Développement logiciel  
-- Coût des données tierces (IGN, météo)  
-- Maintenance infrastructure cloud  
-- R&D et salaires  
+**Structure de coûts**
+- Développement logiciel
+- Coût des données tierces (IGN, météo)
+- Maintenance infrastructure cloud
+- R&D et salaires
 
-**Flux de revenus**  
-- Licences / abonnements  
-- Accès API payant (SaaS)  
-- Consulting / formation  
-- Jeux de données synthétiques premium  
+**Flux de revenus**
+- Licences / abonnements
+- Accès API payant (SaaS)
+- Consulting / formation
+- Jeux de données synthétiques premium
