@@ -48,8 +48,7 @@ nav:
   - Reproductibilité: reproducibility.md
   - Annexes: annexes.md
 
-
-not_in_nav:
-  - _drafts/**
-  - reports/**
-  - results.md
+exclude_docs: |
+  ^_drafts/.*$
+  ^reports/.*$
+  ^results\.md$
