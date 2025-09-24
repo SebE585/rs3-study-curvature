@@ -1,4 +1,4 @@
-.PHONY: venv install etl test docs serve figs quantiles stats dists all report report-docs report-by-class report-by-class-docs bias-sweep bias-sweep-docs
+.PHONY: venv install etl test docs serve figs quantiles stats dists all report report-docs report-by-class report-by-class-docs bias-sweep bias-sweep-docs curves curves-all curves-all-rows match-curves curve-profiles curve-stats curve-stats-by-class curve-stats-rows report-curves report-curves-docs
 
 venv:
 	python -m venv .venv && . .venv/bin/activate && pip install -U pip
@@ -233,6 +233,9 @@ curve-stats-rows: match-curves
 
 curves-all: curve-profiles curve-stats-by-class report-curves-docs
 	@echo "✅ Courbes: profils + KPIs (global & par classe) + rapport doc"
+
+curves-all-rows: curve-profiles curve-stats-rows report-curves-docs
+	@echo "✅ Courbes: profils + KPIs (global, par classe & lignes) + rapport doc"
 
 # 3) Tout en une passe
 all: stats dists

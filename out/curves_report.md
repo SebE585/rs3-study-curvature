@@ -14,4 +14,4 @@ Ce rapport se concentre sur les courbes détectées (séquences à forte courbur
 
 ## Figures
 
-![Profil moyen de courbure](out/plots/curves_20250922_174247/mean_kappa_profile.png)
+![Profil moyen de courbure](out/plots/curves_20250922_175911/mean_kappa_profile.png)
