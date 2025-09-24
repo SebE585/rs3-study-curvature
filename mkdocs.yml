@@ -1,74 +1,49 @@
-site_name: RS3 — Curvature Study
-site_description: Étude des rayons de courbure et implications pour a_lat = v^2/r
+site_name: RS3 — Étude de la courbure du réseau routier
+site_description: Analyse de la courbure des routes (OSM vs IGN), méthodes et résultats.
 site_url: https://sebe585.github.io/rs3-study-curvature/
-repo_url: https://github.com/SebE585/rs3-study-curvature
+
 repo_name: SebE585/rs3-study-curvature
-edit_uri: edit/main/docs/
+repo_url: https://github.com/SebE585/rs3-study-curvature
+
+use_directory_urls: true
+strict: true
 
 theme:
-  name: material
-  language: fr
-  features:
-    - navigation.sections
-    - navigation.expand
-    - navigation.top         # barre de nav collante
-    - content.code.copy
-    - toc.integrate
-    - navigation.footer
-    - content.action.edit
-  icon:
-    logo: material/road-variant # changeable par un logo local si vous en avez un
-  favicon: assets/img/favicon.png  # placez un favicon ici si vous en avez un
+  name: mkdocs
 
 markdown_extensions:
+  - toc:
+      permalink: true
   - admonition
-  - attr_list
-  - def_list
+  - tables
   - footnotes
-  - md_in_html
-  - pymdownx.arithmatex: { generic: true }
-  - pymdownx.details
-  - pymdownx.superfences
-
-extra_javascript:
-  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
-
-extra:
-  social:
-    - icon: fontawesome/brands/github
-      link: https://github.com/SebE585
-      name: GitHub
-    - icon: fontawesome/brands/linkedin
-      link: https://www.linkedin.com/in/sebastienedet/
-      name: LinkedIn
-  alternate:
-    - name: Français
-      link: /
-      lang: fr
-
-plugins:
-  - search
-  - mkdocstrings:
-      handlers:
-        python:
-          options:
-            show_root_full_path: false
-            docstring_style: google
+  - def_list
+  - attr_list
 
 nav:
   - Accueil: index.md
-  - État de l’art:
-    - Introduction: etat-de-l-art/intro.md
-    - Modèles géométriques: etat-de-l-art/modeles-geometriques.md
-    - Méthodes géospatiales: etat-de-l-art/methodes-geospatiales.md
-    - Vision par ordinateur: etat-de-l-art/methodes-vision.md
-    - Capteurs véhicule: etat-de-l-art/methodes-capteurs.md
-    - Applications: etat-de-l-art/applications.md
+  - Aperçu:
+      - Produit: product.md
+      - Jeux de données: datasets.md
+      - Méthode (vue d'ensemble): method.md
   - Méthodes:
-    - Pipeline κ/r: methods/curvature.md
-    - Profils & classes: methods/profils-classes.md
+      - Aperçu des méthodes: methods/index.md
+      - Courbure des tronçons: methods/curvature.md
+      - Profils par classes: methods/profils-classes.md
   - Résultats:
-    - OSM vs BD TOPO: results/osm-vs-ign.md
-    - Distributions par classe: results/distributions-classes.md
-  - Discussion: discussion.md
+      - Vue d'ensemble: results/index.md
+      - OSM vs IGN: results/osm-vs-ign.md
+      - Distributions par classes: results/distributions-classes.md
+      - Hotspots: hotspots.md
+      - Comparaison rapide: compare_quick.md
+      - Comparaison nearest: compare_nearest.md
+  - État de l’art:
+      - Aperçu: etat-de-l-art/index.md
+      - Introduction: etat-de-l-art/intro.md
+      - Modèles géométriques: etat-de-l-art/modeles-geometriques.md
+      - Méthodes géospatiales: etat-de-l-art/methodes-geospatiales.md
+      - Méthodes de vision: etat-de-l-art/methodes-vision.md
+      - Méthodes capteurs: etat-de-l-art/methodes-capteurs.md
+      - Applications: etat-de-l-art/applications.md
   - Reproductibilité: reproducibility.md
+  - Annexes: annexes.md
