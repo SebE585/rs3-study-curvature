@@ -47,3 +47,8 @@ nav:
       - Applications: etat-de-l-art/applications.md
   - Reproductibilité: reproducibility.md
   - Annexes: annexes.md
+
+exclude_docs:
+  - "_drafts/**"
+  - "reports/**"
+  - "results.md"
