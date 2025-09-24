@@ -8,10 +8,31 @@ import yaml
 import pandas as pd
 import numpy as np
 
-from rs3_study_curvature.io_utils import load_pair, ensure_numeric_columns
-from rs3_study_curvature.plot_utils import plot_hist_kde, plot_box_violin
+from rs3_study_curvature.io import load_pair, ensure_numeric_columns
+from rs3_study_curvature.viz.utils import plot_hist_kde, plot_box_violin
 
-# Mappe vers tes noms réels dans viz/plots.py
+
+def dist_plots(config):  # type: ignore[unused-ignore]
+    import sys
+
+    sys.argv = ["plots.py", "--config", str(config)]
+    main()
+
+
+def class_plots(config):  # type: ignore[unused-ignore]
+    from .plots_by_class import main as _main
+    import sys
+
+    sys.argv = ["plots_by_class.py", "--config", str(config)]
+    _main()
+
+
+def kappa_profiles(config):  # type: ignore[unused-ignore]
+    from .profiles import main as _main
+    import sys
+
+    sys.argv = ["profiles.py", "--config", str(config)]
+    _main()
 
 
 def _ensure_dir(p: str):

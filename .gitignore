@@ -16,3 +16,11 @@ __pycache__/
 
 # mkdocs site build
 /site/
+src/rs3_study_curvature.egg-info/
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/

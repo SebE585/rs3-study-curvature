@@ -32,3 +32,10 @@ repos:
       - id: check-yaml
         exclude: ^configs/class_map\.yml$
       - id: check-toml
+
+exclude: |
+  (?x)^(
+    src/rs3_study_curvature\.egg-info/|
+    dist/|build/|\.venv/|\.tox/|
+    \.pytest_cache/|\.mypy_cache/|\.ruff_cache/
+  )
