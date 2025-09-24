@@ -29,6 +29,7 @@ docs = [
   "mkdocs-material>=9.5",
   "mkdocstrings[python]>=0.25",
   "tqdm>=4.66",
+  "mkdocs-exclude>=1.0.2",
 ]
 
 [tool.pytest.ini_options]

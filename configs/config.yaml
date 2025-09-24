@@ -90,7 +90,7 @@ metrics:
     label: "Longueur (m)"
 
 # (Optionnel) colonne de classe — utile plus tard pour l'analyse par classe
-class_column: "class_norm"   # ex: motorway, primary, ...
+class_column: "class"   # colonne brute en entrée ; normalisée en class_norm par le script
 
 # Répertoires de sortie pour les scripts d'analyse
 outputs:
@@ -114,3 +114,27 @@ fig:
 
 # Seed pour reproductibilité de sous-échantillonnages éventuels
 random_seed: 42
+
+# --- Harmonisation des classes (OSM <-> BD TOPO)
+class_mapping_file: "configs/class_map.yml"
+class_groups_file:  "configs/class_groups.yml"
+
+# Mapping inline (prioritaire sur class_mapping_file)
+class_mapping:
+  osm:
+    motorway_link: motorway
+    trunk_link: trunk
+    primary_link: primary
+    secondary_link: secondary
+    tertiary_link: tertiary
+  bdtopo:
+    route_a_1_chaussee: primary
+    route_a_2_chaussees: trunk
+    type_autoroutier: motorway
+    bretelle: trunk
+    rond_point: unclassified
+    route_empierree: track
+    chemin: track
+    sentier: path
+    escalier: steps
+    bac_ou_liaison_maritime: ferry

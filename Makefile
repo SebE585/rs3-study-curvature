@@ -1,10 +1,12 @@
-.PHONY: help venv install install-dev fmt fix lint typecheck test check etl stats stats-by-class plots profiles report docs docs-serve serve clean clean-pyc clean-all env pre-commit
+.PHONY: help venv install install-dev fmt fix lint typecheck test check etl stats stats-by-class plots figures profiles report docs docs-serve serve clean clean-pyc clean-all env pre-commit _ensure_cli
 
 .DEFAULT_GOAL := help
 SHELL := /bin/bash
 
 # Virtualenv activation prefix for all commands
 PY = . .venv/bin/activate &&
+PYTHON := .venv/bin/python
+PIP := .venv/bin/pip
 CFG ?= configs/config.yaml
 
 # Tool shortcuts
@@ -12,6 +14,10 @@ RUFF := ruff
 MYPY := mypy
 PYTEST := pytest -q
 MYPY_FLAGS := --ignore-missing-imports --namespace-packages
+
+## Ensure CLI runtime deps are present (typer)
+_ensure_cli:
+	${PY} python -c "import typer" >/dev/null 2>&1 || ${PY} pip install --quiet typer
 
 ## Show this help
 help:
@@ -55,39 +61,49 @@ test:
 check: fmt lint test
 
 ## Run ETL from config
-etl:
-	${PY} rs3c compute from-config --config $(CFG)
+etl: _ensure_cli
+	${PY} ${PYTHON} -m rs3_study_curvature.cli.main compute from-config $(CFG)
 
 ## Compute global stats
-stats:
-	${PY} rs3c stats global --config $(CFG)
+stats: _ensure_cli
+	${PY} ${PYTHON} -m rs3_study_curvature.cli.main stats global $(CFG)
 
 ## Compute stats by class
-stats-by-class:
-	${PY} rs3c stats by-class --config $(CFG)
+stats-by-class: _ensure_cli
+	${PY} ${PYTHON} -m rs3_study_curvature.cli.main stats by-class $(CFG)
 
 ## Generate plots (distributions and by-class)
-plots:
-	${PY} rs3c plots distributions --config $(CFG)
-	${PY} rs3c plots by-class --config $(CFG)
+plots: _ensure_cli
+	${PY} ${PYTHON} -m rs3_study_curvature.cli.main plots distributions $(CFG)
+	${PY} ${PYTHON} -m rs3_study_curvature.cli.main plots by-class $(CFG)
+
+## Alias: generate figures (same as plots)
+figures: plots
 
 ## Generate κ profiles plots
-profiles:
-	${PY} rs3c plots profiles --config $(CFG)
+profiles: _ensure_cli
+	${PY} ${PYTHON} -m rs3_study_curvature.cli.main plots profiles $(CFG)
 
 ## Build Markdown report
-report:
+report: _ensure_cli
 	mkdir -p out/reports
-	${PY} rs3c report curves --config $(CFG) --out-md out/reports/curves.md
+	@echo "[report] Building Markdown report via Typer CLI..."
+	${PY} ${PYTHON} -m rs3_study_curvature.cli.main report curves $(CFG) out/reports/curves.md
 
 ## Build docs (MkDocs)
 docs:
+	${PY} python -c "import mkdocs" >/dev/null 2>&1 || ${PY} ${PIP} install --quiet mkdocs
 	${PY} mkdocs build --strict
+
+report-doc: report
+	mkdir -p docs/reports
+	cp -f out/reports/curves.md docs/reports/curves.md
 
 ## Serve docs locally
 docs-serve: serve
 ## Serve docs locally (alias)
 serve:
+	${PY} python -c "import mkdocs" >/dev/null 2>&1 || ${PY} ${PIP} install --quiet mkdocs
 	${PY} mkdocs serve -a 0.0.0.0:8000
 
 ## Clean generated artifacts (out/ and processed data)

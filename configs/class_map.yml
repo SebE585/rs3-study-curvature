@@ -1,4 +1,3 @@
-
 # === RS3 class map — BD TOPO (nature) & local FR labels → OSM highway ===
 # Notes:
 # - Matching is case-insensitive; accents and extra spaces are normalized upstream.
@@ -141,6 +140,17 @@
 "liaison maritime": ferry
 "bac": ferry
 "ferry": ferry
+
+# --- Variantes normalisées snake_case (issues du prétraitement) ---
+"route_a_1_chaussee": primary
+"route_a_2_chaussees": trunk
+"route_a_chaussees_separees": trunk
+"route_express": trunk
+"voie_rapide": trunk
+"rond_point": unclassified
+"route_empierree": track
+"type_autoroutier": motorway
+"bac_ou_liaison_maritime": ferry
 
 # --- Filet de sécurité orthographique (prudence) ---
 "chaussee": primary

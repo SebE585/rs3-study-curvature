@@ -34,6 +34,7 @@ nav:
       - Vue d'ensemble: results/index.md
       - OSM vs IGN: results/osm-vs-ign.md
       - Distributions par classes: results/distributions-classes.md
+      - Rapport courbure (auto): reports/curves.md
       - Hotspots: hotspots.md
       - Comparaison rapide: compare_quick.md
       - Comparaison nearest: compare_nearest.md
@@ -48,7 +49,13 @@ nav:
   - Reproductibilité: reproducibility.md
   - Annexes: annexes.md
 
-exclude_docs: |
-  ^_drafts/.*$
-  ^reports/.*$
-  ^results\.md$
+
+plugins:
+  - search
+  - exclude:
+      glob:
+        - "results.md"
+        - "reports/bias_sweep.md"
+        - "reports/curvature_by_class.md"
+        - "reports/curvature_report.md"
+        - "reports/curves_report.md"

@@ -39,6 +39,37 @@ def _ensure_dir(p: str):
     os.makedirs(p, exist_ok=True)
 
 
+def _normalize_metrics(cfg: dict) -> list[dict]:
+    """
+    Accept either:
+      - metrics: ["length_m", "curvature", ...]
+      - metrics: [{"name": "length_m", "label": "Longueur (m)"}, ...]
+    and return a list of dicts with keys "name" and "label".
+    """
+    raw = cfg.get("metrics", [])
+    norm: list[dict] = []
+    for m in raw:
+        if isinstance(m, str):
+            norm.append({"name": m, "label": m})
+        elif isinstance(m, dict) and "name" in m:
+            norm.append({"name": m["name"], "label": m.get("label", m["name"])})
+    return norm
+
+
+def _normalize_outputs(cfg: dict) -> tuple[str, str]:
+    """
+    Ensure outputs directories exist and return (out_root, out_plots).
+    Fallbacks:
+      out_root = "out"
+      out_plots = os.path.join(out_root, "plots")
+    """
+    out_root = cfg.get("outputs", {}).get("root") or "out"
+    out_plots = cfg.get("outputs", {}).get("plots_dir") or os.path.join(out_root, "plots")
+    _ensure_dir(out_root)
+    _ensure_dir(out_plots)
+    return out_root, out_plots
+
+
 # --- Helper: resolve metric column, optionally derive radius/curvature ---
 def resolve_metric_series(df: pd.DataFrame, metric: str) -> pd.Series | None:
     """Return a numeric Series for the requested metric.
@@ -72,27 +103,41 @@ def main():
     parser.add_argument("--config", required=True, help="YAML de configuration")
     args = parser.parse_args()
 
-    with open(args.config, "r") as f:
-        cfg = yaml.safe_load(f)
+    # Charge la configuration
+    with open(args.config, "r", encoding="utf-8") as f:
+        cfg = yaml.safe_load(f) or {}
 
-    osm_path = cfg["inputs"]["osm"]
-    bd_path = cfg["inputs"]["bdtopo"]
-    metrics = cfg["metrics"]
+    # Normalisation des chemins de sortie (avec valeurs par défaut)
+    out_root, out_plots = _normalize_outputs(cfg)
 
-    out_root = cfg["outputs"]["root"]
-    out_plots = cfg["outputs"]["plots_dir"]
-    _ensure_dir(out_root)
-    _ensure_dir(out_plots)
-
+    # Paramètres de tracés (avec valeurs par défaut)
     bins = cfg.get("hist", {}).get("bins", "fd")
     kde = bool(cfg.get("kde", {}).get("enabled", True))
     dpi = int(cfg.get("fig", {}).get("dpi", 140))
     width = float(cfg.get("fig", {}).get("width", 9.0))
     height = float(cfg.get("fig", {}).get("height", 6.0))
 
-    osm, bd = load_pair(osm_path, bd_path)
+    # Entrées
+    inputs = cfg.get("inputs", {})
+    osm_path = inputs.get("osm")
+    bd_path = inputs.get("bdtopo")
+    if not osm_path or not bd_path:
+        raise SystemExit("⚠️  'inputs.osm' et 'inputs.bdtopo' doivent être définis dans le YAML.")
+
+    # Liste des métriques (format souple)
+    metrics = _normalize_metrics(cfg)
+    if not metrics:
+        raise SystemExit("⚠️  'metrics' est vide. Utilisez une liste de noms ou de {name,label}.")
+
+    try:
+        osm, bd = load_pair(osm_path, bd_path)
+    except Exception as e:
+        raise SystemExit(f"❌ Impossible de charger les données: {e}")
+
     metric_names = [m["name"] for m in metrics]
-    labels = {m["name"]: m.get("label", m["name"]) for m in metrics}
+    labels = {m["name"]: m["label"] for m in metrics}
+
+    # S'assure que les colonnes numériques existantes sont au bon format
     osm = ensure_numeric_columns(osm, metric_names)
     bd = ensure_numeric_columns(bd, metric_names)
 
@@ -101,7 +146,7 @@ def main():
     _ensure_dir(out_dir_ts)
 
     for m in metric_names:
-        # Resolve metric series (supports bidirectional derivation radius_m ↔ curvature)
+        # Résout la série métrique (gère le couplage radius_m ↔ curvature)
         s_osm = resolve_metric_series(osm, m)
         s_bd = resolve_metric_series(bd, m)
         if s_osm is None or s_bd is None:
@@ -112,7 +157,7 @@ def main():
             )
             continue
 
-        # Build minimal DataFrames with the resolved numeric series so that plot_utils works unchanged
+        # DataFrames minimaux pour les fonctions de tracé
         tmp_osm = pd.DataFrame({m: s_osm})
         tmp_bd = pd.DataFrame({m: s_bd})
 
