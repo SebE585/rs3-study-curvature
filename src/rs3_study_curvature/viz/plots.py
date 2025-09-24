@@ -12,11 +12,7 @@ from rs3_study_curvature.io_utils import load_pair, ensure_numeric_columns
 from rs3_study_curvature.plot_utils import plot_hist_kde, plot_box_violin
 
 # Mappe vers tes noms réels dans viz/plots.py
-from rs3_study_curvature.viz.plots import (
-    main_distributions as dist_plots,
-    main_distributions_by_class as class_plots,
-    main_kappa_profiles as kappa_profiles,
-)
+
 
 def _ensure_dir(p: str):
     os.makedirs(p, exist_ok=True)

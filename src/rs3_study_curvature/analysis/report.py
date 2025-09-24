@@ -4,11 +4,6 @@ import argparse
 import os
 import pandas as pd
 
-from typing import Any, Optional
-
-
-from rs3_study_curvature.analysis.report import generate_report as build_report
-
 
 def main():
     ap = argparse.ArgumentParser(description="Rapport Markdown — courbure/virages")
@@ -60,6 +55,11 @@ def main():
     with open(args.out, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
     print(f"✅ Rapport courbure → {args.out}")
+
+
+def build_report(*args, **kwargs):
+    """Wrapper attendu par la CLI — délègue au main() basé sur argparse."""
+    return main()
 
 
 if __name__ == "__main__":
