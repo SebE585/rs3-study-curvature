@@ -18,4 +18,4 @@ Découvrez tout ce qu'il faut savoir pour maîtriser l'analyse de la **courbure*
 
 Cette documentation s'adresse aux chercheurs, collectivités territoriales, assureurs, et acteurs de la mobilité souhaitant approfondir leur compréhension des données routières et leurs applications pratiques.
 
-👉 Pour commencer : consultez la page **Produit** ([product.md](product.md)) pour le cadrage marché, ou la page **Pipelines** ([osm-ign-pipeline.md](osm-ign-pipeline.md)) pour les détails techniques. Le *paper* sera publié ultérieurement.
+👉 Pour commencer : consultez la page **Produit** ([product.md](product.md)) pour le cadrage marché, ou le menu **Pipelines** pour les détails techniques (section « OSM ↔ IGN »). Le *paper* sera publié ultérieurement.
