@@ -135,9 +135,7 @@ def tidy_from_csv(path: Path) -> pd.DataFrame:
     if "metric" in df0.columns and _cols_look_like_quants([c for c in df0.columns if c != "metric"]):
         long = df0.melt(id_vars=["metric"], var_name="quantile", value_name="value")
         # nettoyer les labels de quantiles 'q10' -> '0.10'
-        long["quantile"] = (
-            long["quantile"].astype(str).str.lower().str.replace("q", "", regex=False).apply(lambda s: f"{float(s) / 100:.2f}" if s.isdigit() else s)
-        )
+        long["quantile"] = long["quantile"].astype(str).str.lower().str.replace("q", "", regex=False).apply(lambda s: f"{float(s) / 100:.2f}" if s.isdigit() else s)
         long["quantile"] = long["quantile"].astype(float)
         return long[["metric", "quantile", "value"]]
 
@@ -146,14 +144,7 @@ def tidy_from_csv(path: Path) -> pd.DataFrame:
     first_col = df0.columns[0]
     try:
         # essayer: la première colonne contient des quantiles (ex: '0.10','0.50', 'q10', etc.)
-        q_series = (
-            df0[first_col]
-            .astype(str)
-            .str.lower()
-            .str.replace("q", "", regex=False)
-            .apply(lambda s: f"{float(s) / 100:.2f}" if s.isdigit() else s)
-            .astype(float)
-        )
+        q_series = df0[first_col].astype(str).str.lower().str.replace("q", "", regex=False).apply(lambda s: f"{float(s) / 100:.2f}" if s.isdigit() else s).astype(float)
         # succès -> transposer
         tmp = df0.drop(columns=[first_col]).T
         tmp.index.name = "metric"
@@ -286,9 +277,7 @@ def main():
             "inner_high": qu,
         }
         # Fallback: si un quantile demandé n'existe pas, prendre le plus proche disponible
-        chosen: Dict[str, float] = {
-            k: (_closest(avail_qs, v) if round(v, 6) not in {round(a, 6) for a in avail_qs} else v) for k, v in requested.items()
-        }
+        chosen: Dict[str, float] = {k: (_closest(avail_qs, v) if round(v, 6) not in {round(a, 6) for a in avail_qs} else v) for k, v in requested.items()}
 
         # Alerter si un fallback a été appliqué
         for k, v in requested.items():

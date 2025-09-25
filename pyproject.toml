@@ -42,7 +42,7 @@ rs3c = "rs3_study_curvature.cli.main:app"
 
 # pyproject.toml
 [tool.ruff]
-line-length = 150
+line-length = 250
 extend-exclude = ["out", "data", "scripts"]
 
 [tool.ruff.lint]

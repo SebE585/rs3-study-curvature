@@ -151,10 +151,7 @@ def main():
         s_bd = resolve_metric_series(bd, m)
         if s_osm is None or s_bd is None:
             missing_side = "OSM" if s_osm is None else "BDTOPO"
-            print(
-                f"[SKIP] Colonne manquante pour '{m}' côté {missing_side}. "
-                "(Astuce: 'radius_m' est dérivé de 'curvature' et inversement si l'un des deux existe.)"
-            )
+            print(f"[SKIP] Colonne manquante pour '{m}' côté {missing_side}. " "(Astuce: 'radius_m' est dérivé de 'curvature' et inversement si l'un des deux existe.)")
             continue
 
         # DataFrames minimaux pour les fonctions de tracé

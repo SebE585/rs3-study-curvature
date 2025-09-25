@@ -1,4 +1,4 @@
-.PHONY: help venv install install-dev fmt fix lint typecheck test check etl stats stats-by-class plots figures profiles report docs docs-serve serve clean clean-pyc clean-all env pre-commit _ensure_cli
+.PHONY: help venv install install-dev fmt fix lint typecheck test check etl stats stats-by-class plots figures profiles report docs docs-serve serve clean clean-pyc clean-all env pre-commit _ensure_cli linkedin-map linkedin-distrib romilly compare-osm-ign analyze-stats
 
 .DEFAULT_GOAL := help
 SHELL := /bin/bash
@@ -8,6 +8,14 @@ PY = . .venv/bin/activate &&
 PYTHON := .venv/bin/python
 PIP := .venv/bin/pip
 CFG ?= configs/config.yaml
+OUT_DIR_LINKEDIN ?= out/plots/linkedin
+OUT_DIR_ROMILLY  ?= out/romilly
+
+# Data paths
+RS3_DATA_ROOT ?= ../../rs3-data
+RS3_OSM_PATH ?= $(RS3_DATA_ROOT)/osm/normandie-highways.geojson
+RS3_IGN_PATH ?= $(RS3_DATA_ROOT)/bdtopo/troncon_de_route.gpkg
+RS3_STREETS_SOURCE ?= osm
 
 # Tool shortcuts
 RUFF := ruff
@@ -125,3 +133,40 @@ env:
 ## Run pre-commit hooks on all files
 pre-commit:
 	${PY} pre-commit run --all-files
+
+linkedin-map:
+	# Usage: make linkedin-map BBOX="minx miny maxx maxy" STREET="Rue Blingue" BUF=40
+	RS3_STREETS_SOURCE=$(RS3_STREETS_SOURCE) RS3_OSM_PATH=$(RS3_OSM_PATH) RS3_IGN_PATH=$(RS3_IGN_PATH) \
+	python -m rs3_study_curvature.cli linkedin-map \
+	  --out-dir $(OUT_DIR_LINKEDIN) \
+	  $(BBOX) \
+	  $(if $(STREET),--street "$(STREET)") \
+	  --street-buffer-m $(if $(BUF),$(BUF),40) \
+	  --fit-clothoid
+
+linkedin-distrib:
+	# Usage: make linkedin-distrib BBOX="minx miny maxx maxy"
+	RS3_STREETS_SOURCE=$(RS3_STREETS_SOURCE) RS3_OSM_PATH=$(RS3_OSM_PATH) RS3_IGN_PATH=$(RS3_IGN_PATH) \
+	python -m rs3_study_curvature.cli linkedin-distrib \
+	  --out-dir $(OUT_DIR_LINKEDIN) \
+	  $(BBOX)
+
+romilly:
+	# Usage: make romilly BBOX="minx miny maxx maxy" STREET="Rue Blingue" BUF=40
+	RS3_STREETS_SOURCE=$(RS3_STREETS_SOURCE) RS3_OSM_PATH=$(RS3_OSM_PATH) RS3_IGN_PATH=$(RS3_IGN_PATH) \
+	python -m rs3_study_curvature.cli romilly-analyze \
+	  --out-dir $(OUT_DIR_ROMILLY) \
+	  $(BBOX) \
+	  $(if $(STREET),--street "$(STREET)") \
+	  --street-buffer-m $(if $(BUF),$(BUF),40)
+
+compare-osm-ign:
+	# Usage: make compare-osm-ign BBOX="minx miny maxx maxy" STREET="Rue ..." BUF=40
+	# Génère deux cartes: OSM -> $(OUT_DIR_LINKEDIN)_osm, IGN -> $(OUT_DIR_LINKEDIN)_ign
+	$(MAKE) linkedin-map BBOX="$(BBOX)" STREET="$(STREET)" BUF="$(BUF)" OUT_DIR_LINKEDIN=$(OUT_DIR_LINKEDIN)_osm RS3_STREETS_SOURCE=osm
+	$(MAKE) linkedin-map BBOX="$(BBOX)" STREET="$(STREET)" BUF="$(BUF)" OUT_DIR_LINKEDIN=$(OUT_DIR_LINKEDIN)_ign RS3_STREETS_SOURCE=ign
+
+analyze-stats:
+	# Summarize curvature stats into Markdown
+	mkdir -p out/stats
+	${PY} ${PYTHON} scripts/analyze_stats.py
