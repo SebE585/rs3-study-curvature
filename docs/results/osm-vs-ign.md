@@ -10,9 +10,7 @@ L'extraction des segments a été réalisée à partir des données OpenStreetMa
 ## Résultats globaux
 
 Le nombre total de segments retenus après filtrage est de plusieurs milliers, couvrant une large plage de rayons de courbure, allant de quelques mètres à plusieurs centaines de mètres. Cette diversité permet d'analyser finement la géométrie des routes.
-Pour visualiser la répartition spatiale des segments et des rayons de courbure, vous pouvez consulter les cartes interactives générées :
-- Carte OSM : ![Carte OSM](out/plots/linkedin_osm/linkedin_map.png)
-- Carte IGN : ![Carte IGN](out/plots/linkedin_ign/linkedin_map.png)
+Les cartes comparatives (OSM et IGN) sont générées automatiquement et disponibles dans le répertoire `out/plots` du dépôt.
 
 ## Comparaison OSM vs IGN
 

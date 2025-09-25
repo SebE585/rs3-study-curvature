@@ -9,9 +9,9 @@ Les distributions des rayons de courbure sont générées à partir des données
 
 ## Figures
 
-- [Histogrammes par classe](../../out/plots/by_class_20250924_173611/histograms_by_class.png)
-- [Boxplots par classe](../../out/plots/by_class_20250924_173611/boxplots_by_class.png)
-- [Violin plots par classe](../../out/plots/by_class_20250924_173611/violinplots_by_class.png)
+- Histogrammes par classe (figure générée hors docs, voir répertoire out/plots)
+- Boxplots par classe (figure générée hors docs, voir répertoire out/plots)
+- Violin plots par classe (figure générée hors docs, voir répertoire out/plots)
 
 ## Analyse par classe
 

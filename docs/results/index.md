@@ -31,13 +31,10 @@ Les résultats sont organisés par grands axes : comparaison de sources (OSM vs 
 
 Quelques exemples de visualisations issues des dernières expériences :
 
-- Distribution globale des longueurs de segments :
-  ![Global histogram](../../out/plots/global_20250924_171227/length_m__hist_kde.png)
+Figure générée hors docs (voir répertoire out/plots dans le repo).
 
-- Distribution par classe (motorway) :
-  ![Motorway violin](../../out/plots/by_class_20250924_173611/motorway/length_m__violin.png)
+Figure générée hors docs (voir répertoire out/plots dans le repo).
 
-- Exemple de carte de validation (Rue Blingue, IGN) :
-  ![Carte IGN Rue Blingue](../../out/plots/linkedin_ign/linkedin_map.png)
+Figure générée hors docs (voir répertoire out/plots dans le repo).
 
 ---

@@ -1,30 +1,3 @@
-# Table des matières
-
-- [Table des matières](#table-des-matières)
-- [Couverture des appariements sans contrainte de classe 📊](#couverture-des-appariements-sans-contrainte-de-classe-)
-- [Écarts globaux OSM − BDTOPO sans contrainte de classe (`--drop-inf`) 📈](#écarts-globaux-osm--bdtopo-sans-contrainte-de-classe---drop-inf-)
-  - [Résumé des écarts par distance](#résumé-des-écarts-par-distance)
-    - [Synthèse](#synthèse)
-      - [Forces](#forces)
-      - [Limites](#limites)
-- [Effet de la contrainte de classe avec `--match-class` et `--class-map` 🎯](#effet-de-la-contrainte-de-classe-avec---match-class-et---class-map-)
-    - [Synthèse](#synthèse-1)
-      - [Forces](#forces-1)
-      - [Limites](#limites-1)
-- [Sensibilité à la distance d 🔍](#sensibilité-à-la-distance-d-)
-- [Fichiers produits (exemples) 📁](#fichiers-produits-exemples-)
-- [Bandes de quantiles selon la distance de rapprochement 📉](#bandes-de-quantiles-selon-la-distance-de-rapprochement-)
-- [Implications produit et marché 🚀](#implications-produit-et-marché-)
-    - [Applications directes](#applications-directes)
-    - [Documents associés](#documents-associés)
-- [Résultats statistiques globaux 📊](#résultats-statistiques-globaux-)
-- [Distributions globales 📈](#distributions-globales-)
-- [Résultats par classe 🛣️](#résultats-par-classe-️)
-- [Bias sweep (distance max d’appariement) 🔍](#bias-sweep-distance-max-dappariement-)
-- [Perspectives](#perspectives)
-
----
-
 # Couverture des appariements sans contrainte de classe 📊
 
 | Distance (m) | Nombre d’appariements | Total segments OSM |
