@@ -52,10 +52,3 @@ nav:
 
 plugins:
   - search
-  - exclude:
-      glob:
-        - "results.md"
-        - "reports/bias_sweep.md"
-        - "reports/curvature_by_class.md"
-        - "reports/curvature_report.md"
-        - "reports/curves_report.md"
