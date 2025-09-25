@@ -15,3 +15,25 @@ Ce rapport se concentre sur les courbes détectées (séquences à forte courbur
 ## Figures
 
 ![Profil moyen de courbure](../assets/reports/curves_20250922_175911/mean_kappa_profile.png)
+
+## Interprétation des résultats
+
+Les indicateurs présentés permettent de comprendre les différences systématiques entre les données OSM et BD TOPO (IGN). Le diff_r_min, représentant la différence de rayon minimal, montre que les rayons issus de l'IGN sont généralement plus grands, ce qui suggère une modélisation plus lissée des virages. Le diff_kappa_max, indiquant la différence de courbure maximale, révèle une tendance d'OSM à présenter des courbures plus fortes, possiblement dues à une segmentation plus fine des trajectoires. Les différences sur les indicateurs alat50_diff, alat80_diff et alat110_diff confirment ces biais systématiques, avec des valeurs négatives indiquant que la courbure moyenne mesurée sur OSM est plus élevée que celle de l'IGN. Ces écarts sont importants car ils impactent la perception de la géométrie des virages et donc les analyses qui en découlent.
+
+## Causes possibles des écarts
+
+- Différences de modélisation : IGN utilise des vecteurs plus lissés tandis qu'OSM présente des segmentations plus brutes et détaillées.
+- Granularité géométrique différente entre les deux sources de données.
+- Qualité et homogénéité variable des données, avec potentiellement des erreurs ou des approximations différentes.
+
+## Implications pratiques
+
+- Sécurité routière : les écarts peuvent entraîner une surévaluation ou une sous-évaluation des virages, impactant l'analyse des risques.
+- Simulation ADAS/autonomie : les différences de courbure influencent les trajectoires simulées et donc la fiabilité des systèmes d'aide à la conduite.
+- Études d’infrastructure : une modélisation précise des virages est cruciale pour la conception et la maintenance des routes.
+
+## Perspectives
+
+- Enrichissement des analyses avec des données hybrides combinant OSM et IGN pour bénéficier des avantages de chaque source.
+- Intégration de clothoïdes ajustées pour une meilleure représentation géométrique des virages.
+- Construction d’un référentiel national de virages pour standardiser les analyses et améliorer la qualité des données.

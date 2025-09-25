@@ -1,6 +1,9 @@
 # État de l’art — Introduction
 
-Cette section introduit l’état de l’art sur l’estimation de la courbure routière.
-Elle présente les grandes familles de méthodes et les domaines d’application associés.
+L’estimation de la courbure routière constitue un enjeu majeur dans plusieurs domaines tels que la sécurité routière, les systèmes avancés d’aide à la conduite (ADAS), la simulation de trajectoires et la planification des infrastructures. Une connaissance précise et fiable de la géométrie des routes permet d’améliorer la prévention des accidents, d’optimiser les algorithmes de conduite autonome et d’affiner les modèles de trafic.
 
-👉 Contenu à compléter : contexte, problématique, revue générale.
+Cependant, la problématique de l’estimation de la courbure routière est complexe en raison de l’absence de référentiels homogènes et normalisés. Les données disponibles proviennent de sources diverses telles que OpenStreetMap (OSM), l’Institut national de l’information géographique et forestière (IGN) ou encore des relevés GPS, chacune présentant des niveaux de précision, des formats et des mises à jour variables. Par ailleurs, les approches actuelles souffrent souvent de limitations liées à la qualité des données, à la résolution spatiale ou aux conditions environnementales.
+
+La littérature recense plusieurs grandes familles de méthodes pour estimer la courbure des routes. Les méthodes géométriques s’appuient sur l’analyse des réseaux routiers vectoriels et leur topologie. Les approches géospatiales exploitent les données GPS et les cartes numériques pour reconstruire la trajectoire routière. Les techniques de vision par caméra et LiDAR permettent de capter directement la géométrie locale de la chaussée grâce à des capteurs embarqués ou fixes. Enfin, les capteurs inertiels tels que les unités de mesure inertielle (IMU) fournissent des informations complémentaires sur la dynamique du véhicule et la forme de la route.
+
+Les sections suivantes détailleront chacune de ces familles de méthodes, en exposant leurs principes, avantages, limites et domaines d’application.

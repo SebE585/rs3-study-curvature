@@ -50,7 +50,9 @@ nav:
       - Applications: etat-de-l-art/applications.md
   - Reproductibilité: reproducibility.md
   - Annexes: annexes.md
-  - Vision: vision/referentiel-virages.md
+  - Vision:
+      - Référentiel de virages (hybride): vision/referentiel-virages.md
+      - Roadmap & avancement: vision/roadmap.md
 
 
 plugins:

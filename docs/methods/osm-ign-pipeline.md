@@ -1,57 +1,51 @@
+# Pipeline opérationnel de fusion OSM + IGN pour l’analyse de virages
 
+Ce pipeline est désormais opérationnel pour fusionner les données issues d’OpenStreetMap (OSM) et de l’IGN BDTopo. Toutefois, l’utilisation des données IGN nécessite une attention particulière, notamment concernant le choix de la colonne de nom des routes et la reprojection des données de EPSG:2154 vers EPSG:4326.
 
-# Pipeline technique de fusion OSM + IGN pour l’analyse de virages
+## Variables d’environnement utilisées
 
-## Introduction
+Le comportement du pipeline est contrôlé par plusieurs variables d’environnement, détaillées dans le tableau ci-dessous :
 
-Ce document détaille le pipeline technique permettant de fusionner les données OSM et IGN BDTopo, enrichies par des mesures terrain, pour créer un référentiel de virages hybride.
+| Variable                 | Description                                                                                          | Exemple / Valeur par défaut                      |
+|--------------------------|--------------------------------------------------------------------------------------------------|-------------------------------------------------|
+| `RS3_STREETS_SOURCE`     | Source des données de rue à utiliser (`osm` ou `ign`).                                           | `osm`                                           |
+| `RS3_OSM_PATH`           | Chemin vers le fichier GeoJSON OSM nettoyé.                                                      | `data/osm_clean.geojson`                         |
+| `RS3_IGN_PATH`           | Chemin vers le fichier vectoriel IGN BDTopo.                                                     | `data/ign_raw`                                  |
+| `RS3_IGN_LAYER`          | Nom de la couche IGN à charger.                                                                  | `BDTOPO_V3_ROUTE`                               |
+| `RS3_IGN_COL_NAME`       | Nom de la colonne contenant le nom des routes dans la couche IGN. Si non défini, aucun filtre n’est appliqué sur les noms. | `cpx_toponyme_route_nommee`                      |
+| `RS3_STREETS_KEEP_SEGMENTS` | Critère de filtrage des segments à conserver (ex : `True` pour garder tous les segments).       | `False`                                          |
 
-## Étapes du pipeline
+### Remarque sur `RS3_IGN_COL_NAME`
 
-### 1. Acquisition des données
+Si `RS3_IGN_COL_NAME` n’est pas défini, le pipeline n’applique pas de filtre sur la colonne nom des routes dans les données IGN, ce qui conduit à conserver un grand nombre de segments, souvent verbeux et redondants. Il est donc recommandé de définir cette variable pour cibler précisément les routes d’intérêt.
 
-- **OSM** : extraction via la bibliothèque Python [OSMnx](https://osmnx.readthedocs.io/en/stable/).
-- **IGN BDTopo** : téléchargement des fichiers vectoriels depuis le portail officiel.
-- **Mesures terrain** : import des fichiers GPS ou données capteurs au format standard.
+## Exemples pratiques
 
-### 2. Prétraitement
+### Exemple OSM
 
-- Nettoyage des données (suppression des segments erronés, doublons).
-- Projection dans un système de coordonnées commun (ex : Lambert 93).
-- Filtrage spatial et thématique (ex : uniquement routes, exclusion des chemins piétonniers).
+Pour générer une carte basée uniquement sur les données OSM, utilisez la commande suivante :
 
-### 3. Fusion des données
-
-- Alignement géométrique des réseaux via snapping et matching spatial.
-- Fusion des attributs selon une hiérarchie de confiance (mesures terrain > IGN > OSM).
-- Résolution des conflits et interpolation des segments manquants.
-
-### 4. Extraction des variables d’environnement
-
-- Calcul des courbures et angles de virage.
-- Intégration des données contextuelles (pente, revêtement, visibilité).
-- Génération de fichiers de sortie au format GeoJSON ou Shapefile.
-
-## Commandes Makefile principales
-
-```makefile
-# Téléchargement des données OSM
-download-osm:
-	python scripts/download_osm.py --area "Nom_de_la_zone"
-
-# Prétraitement des données IGN
-preprocess-ign:
-	python scripts/preprocess_ign.py --input data/ign_raw --output data/ign_clean
-
-# Fusion des données
-fuse-data:
-	python scripts/fuse_osm_ign.py --osm data/osm_clean.geojson --ign data/ign_clean.geojson --output data/fused_network.geojson
-
-# Extraction des variables
-extract-variables:
-	python scripts/extract_variables.py --input data/fused_network.geojson --output results/variables.csv
+```bash
+make linkedin-map
 ```
+
+Cette commande exploite les données OSM nettoyées et génère les fichiers nécessaires à l’analyse des virages.
+
+### Exemple IGN
+
+Pour travailler avec les données IGN, il est conseillé de définir la variable d’environnement suivante afin de filtrer les segments par nom de route :
+
+```bash
+export RS3_IGN_COL_NAME="cpx_toponyme_route_nommee"
+```
+
+Puis lancer le pipeline en utilisant les données IGN. Ce paramétrage permet de réduire la verbosité des données et de se concentrer sur les segments pertinents.
+
+## Observations
+
+- Les données OSM sont généralement plus légères et moins détaillées, ce qui facilite le traitement rapide.
+- Les données IGN sont plus riches en informations mais aussi plus verbeuses, nécessitant un filtrage adapté pour éviter la surcharge.
 
 ## Conclusion
 
-Ce pipeline permet une exploitation optimale des données disponibles pour l’étude des virages, en combinant la richesse et la précision des différentes sources.
+Ce pipeline permet désormais de construire un référentiel hybride des virages, combinant la légèreté et la couverture d’OSM avec la richesse et la précision des données IGN. Cette fusion ouvre la voie à des analyses plus robustes et complètes des caractéristiques des routes.

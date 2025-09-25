@@ -1,3 +1,30 @@
+# Table des matières
+
+- [Table des matières](#table-des-matières)
+- [Couverture des appariements sans contrainte de classe 📊](#couverture-des-appariements-sans-contrainte-de-classe-)
+- [Écarts globaux OSM − BDTOPO sans contrainte de classe (`--drop-inf`) 📈](#écarts-globaux-osm--bdtopo-sans-contrainte-de-classe---drop-inf-)
+  - [Résumé des écarts par distance](#résumé-des-écarts-par-distance)
+    - [Synthèse](#synthèse)
+      - [Forces](#forces)
+      - [Limites](#limites)
+- [Effet de la contrainte de classe avec `--match-class` et `--class-map` 🎯](#effet-de-la-contrainte-de-classe-avec---match-class-et---class-map-)
+    - [Synthèse](#synthèse-1)
+      - [Forces](#forces-1)
+      - [Limites](#limites-1)
+- [Sensibilité à la distance d 🔍](#sensibilité-à-la-distance-d-)
+- [Fichiers produits (exemples) 📁](#fichiers-produits-exemples-)
+- [Bandes de quantiles selon la distance de rapprochement 📉](#bandes-de-quantiles-selon-la-distance-de-rapprochement-)
+- [Implications produit et marché 🚀](#implications-produit-et-marché-)
+    - [Applications directes](#applications-directes)
+    - [Documents associés](#documents-associés)
+- [Résultats statistiques globaux 📊](#résultats-statistiques-globaux-)
+- [Distributions globales 📈](#distributions-globales-)
+- [Résultats par classe 🛣️](#résultats-par-classe-️)
+- [Bias sweep (distance max d’appariement) 🔍](#bias-sweep-distance-max-dappariement-)
+- [Perspectives](#perspectives)
+
+---
+
 # Couverture des appariements sans contrainte de classe 📊
 
 | Distance (m) | Nombre d’appariements | Total segments OSM |
@@ -20,7 +47,17 @@
 
 ### Synthèse
 
-Augmenter la distance d’appariement augmente nettement le nombre de segments couverts. Cependant, cela engendre un biais croissant sur la longueur (OSM plus court) et une courbure moyenne plus faible côté OSM, indiquant une simplification ou une rectilinéarité accrue des segments.
+L’augmentation de la distance d’appariement conduit à une couverture plus importante des segments, ce qui est bénéfique pour une analyse exhaustive. Toutefois, cette extension s’accompagne d’un biais croissant sur la longueur, avec des segments OSM systématiquement plus courts que ceux de BDTOPO. Par ailleurs, la diminution de la courbure moyenne observée côté OSM suggère une simplification ou une tendance à la linéarité accrue des segments appariés. Ces phénomènes doivent être pris en compte dans l’interprétation des résultats pour éviter des conclusions erronées.
+
+#### Forces
+
+- Augmentation significative du nombre d’appariements, améliorant la représentativité des analyses.
+- Mise en évidence claire des différences structurelles entre les bases de données.
+
+#### Limites
+
+- Biais croissant sur la longueur, limitant la comparabilité directe.
+- Simplification apparente des segments OSM pouvant masquer des variations fines.
 
 ---
 
@@ -35,7 +72,17 @@ Augmenter la distance d’appariement augmente nettement le nombre de segments c
 
 ### Synthèse
 
-La contrainte de classe améliore l’homogénéité fonctionnelle entre réseaux, réduisant l’écart de courbure. En revanche, le biais sur la longueur s’accentue, reflétant des différences dans la segmentation et la modélisation.
+L’introduction d’une contrainte de classe dans l’appariement améliore la cohérence fonctionnelle entre les réseaux routiers comparés, ce qui se traduit par une réduction notable de l’écart de courbure moyenne. En revanche, cette contrainte accentue le biais sur la longueur, probablement en raison des différences dans la segmentation et la modélisation propres à chaque classe de route. Ce compromis souligne l’importance de choisir judicieusement les paramètres d’appariement selon l’objectif de l’étude.
+
+#### Forces
+
+- Amélioration de l’homogénéité fonctionnelle des segments appariés.
+- Réduction de l’écart de courbure moyenne, renforçant la pertinence des comparaisons.
+
+#### Limites
+
+- Biais accru sur la longueur, potentiellement limitant l’analyse quantitative.
+- Réduction du nombre d’appariements, ce qui peut affecter la robustesse statistique.
 
 ---
 
@@ -114,12 +161,14 @@ Les tests statistiques (Welch t-test, Kolmogorov–Smirnov, Mann–Whitney) ont 
 
 # Résultats par classe 🛣️
 
-Les distributions et statistiques sont également produites par classe normalisée de route.
+Les distributions et statistiques sont également produites par classe normalisée de route. Cette stratification permet d’identifier des comportements spécifiques selon la catégorie fonctionnelle des routes.
 
-Exemple :
-- motorway, trunk, primary, secondary…
+Exemple détaillé :
 
-Voir toutes les figures par classe dans le **Rapport par classe** : [reports/curvature_by_class.md](reports/curvature_by_class.md).
+- **Motorway** : segments généralement longs, avec une courbure faible et une forte homogénéité entre OSM et BDTOPO. Les écarts de longueur sont modérés, reflétant une bonne correspondance des tronçons principaux.
+- **Primary** : segments plus courts et plus sinueux, avec des écarts plus marqués sur la longueur et la courbure, probablement liés à une segmentation plus fine ou à des différences dans la modélisation des routes secondaires.
+
+Ces observations sont détaillées dans le **Rapport par classe** : [reports/curvature_by_class.md](reports/curvature_by_class.md), qui présente toutes les figures et analyses par catégorie de route.
 
 ---
 
@@ -135,3 +184,20 @@ Les analyses de sensibilité montrent l’effet de la distance max sur les écar
 
 ![Bias sweep courbure](assets/img/quantiles/quantiles_diff_curv_mean_1perm.png)
 *Figure 9 : Bias sweep — courbure.*
+
+---
+
+# Perspectives
+
+Pour les prochaines étapes, plusieurs pistes sont envisagées afin de renforcer et d’étendre cette analyse :
+
+1. **Constitution d’un référentiel de virages hybride OSM/IGN**
+   Combiner les forces des deux bases de données pour créer un référentiel de virages plus complet et fiable, facilitant les études de courbure et de sécurité routière.
+
+2. **Intégration dans RoadSimulator3 comme benchmark reproductible**
+   Incorporer ces analyses dans le simulateur RS3 pour permettre des évaluations standardisées et reproductibles des données routières, améliorant ainsi la qualité des simulations.
+
+3. **Ouverture vers des publications scientifiques**
+   Valoriser ces travaux par des publications dans des revues et conférences spécialisées, contribuant à la communauté scientifique et favorisant les collaborations interdisciplinaires.
+
+Ces perspectives visent à consolider la robustesse méthodologique et à maximiser l’impact applicatif des résultats obtenus.
