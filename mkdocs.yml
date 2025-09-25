@@ -30,9 +30,11 @@ nav:
       - Aperçu des méthodes: methods/index.md
       - Courbure des tronçons: methods/curvature.md
       - Profils par classes: methods/profils-classes.md
+      - OSM/IGN — pipeline & variables: methods/osm-ign-pipeline.md
   - Résultats:
       - Vue d'ensemble: results/index.md
       - OSM vs IGN: results/osm-vs-ign.md
+      - Étude de cas (Rue Blingue, OSM vs IGN): results/osm-vs-ign-case.md
       - Distributions par classes: results/distributions-classes.md
       - Rapport courbure (auto): reports/curves.md
       - Hotspots: hotspots.md
@@ -48,6 +50,7 @@ nav:
       - Applications: etat-de-l-art/applications.md
   - Reproductibilité: reproducibility.md
   - Annexes: annexes.md
+  - Vision: vision/referentiel-virages.md
 
 
 plugins:

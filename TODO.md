@@ -24,9 +24,16 @@
 - [ ] Rédiger une discussion approfondie sur les biais observés (longueur, rayon, courbure).
 
 ## 🚀 Étapes suivantes
-- [ ] Définir le plan de soumission (revues / conférences pertinentes).
-- [ ] Étendre l’analyse à d’autres régions pour valider la robustesse.
+- [ ] Définir le plan de soumission (revues / conférences pertinentes) et soumettre l'article.
+- [ ] Étendre l’analyse à d’autres régions pour valider la robustesse (extension géographique).
 - [ ] Explorer la généralisation à d’autres bases de données routières.
 - [ ] Finaliser la rédaction et soumettre un draft interne pour relecture.
 - [ ] Automatiser la génération complète (curves-all) et valider la reproductibilité des rapports.
 - [ ] Compléter l’analyse des hotspots (cas locaux extrêmes) si pertinent.
+
+---
+_Statut des grandes étapes déjà réalisées :_
+- [x] Analyses statistiques
+- [x] Analyse par classe
+- [x] Exploration biais
+- [x] Rédaction scientifique partielle

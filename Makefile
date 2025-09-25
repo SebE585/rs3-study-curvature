@@ -170,3 +170,22 @@ analyze-stats:
 	# Summarize curvature stats into Markdown
 	mkdir -p out/stats
 	${PY} ${PYTHON} scripts/analyze_stats.py
+
+
+## Publish changes: lint, commit, and push
+publish:
+	@set -e; \
+	git add -A; \
+	${PY} pre-commit run -a || ( \
+		echo "🔁 pre-commit fixed files; re-adding and re-running..."; \
+		git add -A; \
+		${PY} pre-commit run -a \
+	); \
+	git commit -m "$${MSG:-Auto: publish}" || echo "Nothing to commit"; \
+	git push
+
+## Emergency publish (skip hooks) — use only if hooks block and you understand the risks
+publish-now:
+	@git add -A
+	@git commit -m "$${MSG:-Emergency publish (no hooks)}" || echo "Nothing to commit"
+	@git push
