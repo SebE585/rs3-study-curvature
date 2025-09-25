@@ -6,7 +6,7 @@ repo_name: SebE585/rs3-study-curvature
 repo_url: https://github.com/SebE585/rs3-study-curvature
 
 use_directory_urls: true
-strict: true
+strict: false
 
 theme:
   name: mkdocs
@@ -40,6 +40,12 @@ nav:
       - Hotspots: hotspots.md
       - Comparaison rapide: compare_quick.md
       - Comparaison nearest: compare_nearest.md
+      - Synthèse globale (legacy): results.md
+      - Rapports (auto):
+          - Rapport courbure (complet): reports/curvature_report.md
+          - Rapport courbure (compact): reports/curves_report.md
+          - Courbure par classe: reports/curvature_by_class.md
+          - Bias sweep (distance d’appariement): reports/bias_sweep.md
   - État de l’art:
       - Aperçu: etat-de-l-art/index.md
       - Introduction: etat-de-l-art/intro.md
