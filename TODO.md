@@ -1,5 +1,9 @@
 # TODO — Étude de la courbure routière
 
+> **Sub-TODO étude courbure.** Vue transverse :
+> [`../ROADMAP.md`](../ROADMAP.md). Logique IP/publi :
+> [`../WORKFLOW.md`](../WORKFLOW.md).
+
 ## 📊 Analyses statistiques
 - [x] Implémenter des tests statistiques (t-test, KS-test, Mann-Whitney) pour comparer OSM vs BD TOPO.
 - [x] Générer les distributions par métrique (longueur, rayon, courbure).
